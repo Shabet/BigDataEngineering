@@ -1,5 +1,9 @@
 # Kafka 설치
 
+## 0. 계획
+* kafka 계정으로 실행
+* [설치요약](<docs/01. 설치/설치편 04-Zookeeper Kafka Nifi 설치.pptx>)
+
 ## 1. 계정 추가
 ```
 # groupadd -g 9092 kafka

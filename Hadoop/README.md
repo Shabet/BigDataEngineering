@@ -3,6 +3,7 @@
 ## 0. 계획
 * hdfs, yarn, mapred 계정으로 hadoop 실행
 * hadoop HA 구성
+* [설치요약](<docs/01. 설치/설치편 06-Hadoop 설치.pptx>)
 
 |구분|Host|비고|
 |:--|:--|:--|

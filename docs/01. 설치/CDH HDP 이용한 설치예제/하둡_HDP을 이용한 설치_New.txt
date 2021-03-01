@@ -1,0 +1,485 @@
+ref)
+https://docs.cloudera.com/HDPDocuments/Ambari/Ambari-2.7.4.0/index.html
+
+https://www.youtube.com/watch?v=JXgRu9vw9so
+https://tjsdud4634.tistory.com/11
+https://datacookbook.kr/32
+
+https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u275-b01/OpenJDK8U-jdk_x64_linux_hotspot_8u275b01.tar.gz
+
+repo)
+http://ro-bucharest-repo.bigstepcloud.com/cloudera-repos/
+
+NOTE. cloudera 서버의 유료화로 인한 꼼수 설치 방법 찾는중!
+
+리눅스 설정(CentOS7)
+--------------------
+1. 호스트명 변경
+    # echo "host01.cluster" > /etc/hostname
+    NOTE. 각 호스트별로 server명을 변경
+
+2. /etc/hosts 설정
+<<<<<<<<<<<<<<<<<<<
+##### Ambari Cluster #####
+192.168.126.51	host01.cluster	host01
+192.168.126.52	host02.cluster	host02
+192.168.126.53	host03.cluster	host03
+192.168.126.54	host04.cluster	host04
+192.168.126.55	host05.cluster	host05
+<<<<<<<<<<<<<<<<<<<
+
+3. IP 설정
+    # cd /etc/sysconfig/network-scripts/
+    # uuidgen ens33 >> ifcfg-ens33
+    # vi ifcfg-ens33
+    ...
+    UUID=
+    IPADDR=
+    ...
+
+    # systemctl restart network
+
+4. 방화벽 중지
+    # systemctl status firewalld
+    # systemctl stop firewalld
+    # systemctl disable firewalld
+
+5. SELinux 기능 제거
+    # setenforce 0
+    # vi /etc/selinux/config
+    SELINUX=disabled
+
+6. ssh
+    [root@host01 ~]# ssh-keygen -t rsa
+    [root@host02 ~]# ssh-keygen -t rsa
+    [root@host03 ~]# ssh-keygen -t rsa
+
+    # ssh-copy-id -i ~/.ssh/id_rsa.pub root@host01.cluster
+    # ssh-copy-id -i ~/.ssh/id_rsa.pub root@host02.cluster
+    # ssh-copy-id -i ~/.ssh/id_rsa.pub root@host03.cluster
+
+7. NTP 활성화
+    # systemctl stop chronyd
+    # systemctl disable chronyd
+    # rpm -qa|grep chronyd
+    # rpm -e chrony-3.4-1.el7.x86_64
+
+    # yum -y install ntp
+    # systemctl start ntpd.service
+    # systemctl enable ntpd.service
+
+8. openjdk 업데이트 및 jdk-devel설치
+    # java -version
+    # rpm -qa|grep openjdk
+    # rpm -e java-1.7.0-openjdk-1.7.0.261-2.6.22.2.el7_8.x86_64
+    # rpm -e java-1.7.0-openjdk-headless-1.7.0.261-2.6.22.2.el7_8.x86_64
+    # yum -y install java-1.8.0-openjdk.x86_64
+    # yum -y install yum install java-1.8.0-openjdk-devel.x86_64
+    # java -version
+    # rpm -qa|grep openjdk
+
+    # (export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk)
+-------------------------------------------------------------------------
+
+
+MariaDB 설치 및 설정
+--------------------
+1. DB 설치
+    (in host01)
+    # yum -y install mariadb-server.x86_64
+
+    # systemctl start mariadb
+    # systemctl enable mariadb
+
+    # mysqladmin -u root password
+    New password: 'root'     #<- 일단 패스워드는 계정과 동일하게...
+    Confirm new password: 
+
+    # mysql -u root -p
+    Enter password: [암호입력]
+
+@@@@@@
+    MariaDB [(none)]> show databases;
+    MariaDB [(none)]> create database hive;
+    MariaDB [(none)]> show databases;
+
+    MariaDB [(none)]> select host,user,password from mysql.user;
+    MariaDB [(none)]> create user 'hive'@'%' identified by 'hive';
+    MariaDB [(none)]> select host,user,password from mysql.user;
+
+    MariaDB [(none)]> grant all privileges on hive.* to 'hive'@'localhost' identified by 'hive';
+    MariaDB [(none)]> grant all privileges on hive.* to 'hive'@'host01' identified by 'hive';    <- 이것만 있으면 됨.
+    MariaDB [(none)]> grant all privileges on hive.* to 'hive'@'host02' identified by 'hive';
+    MariaDB [(none)]> grant all privileges on hive.* to 'hive'@'host03' identified by 'hive';
+
+    MariaDB [(none)]> show grants for 'hive'@'%';
+    MariaDB [(none)]> flush privileges;
+
+    MariaDB [(none)]> create database ambari;
+    MariaDB [(none)]> create user 'ambari'@'%' identified by 'ambari';
+    MariaDB [(none)]> grant all privileges on ambari.* to 'ambari'@'host01' identified by 'ambari';
+    MariaDB [(none)]> show grants for 'ambari'@'%';
+    MariaDB [(none)]> flush privileges;
+
+    MariaDB [(none)]> exit
+@@@@@@
+
+    MariaDB [(none)]> create database ambari DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+    MariaDB [(none)]> create database hive DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+
+    MariaDB [(none)]> grant all privileges on ambari.* to 'ambari'@'%' identified by 'ambari';
+    MariaDB [(none)]> grant all privileges on ambari.* to 'ambari'@'host01.cluster' identified by 'ambari';
+
+    MariaDB [(none)]> grant all privileges on hive.* to 'hive'@'%' identified by 'hive';
+    MariaDB [(none)]> grant all privileges on hive.* to 'hive'@'host01.cluster' identified by 'hive';
+
+    MariaDB [(none)]> flush privileges;
+
+    MariaDB [(none)]> exit
+
+@@@@@@
+    MariaDB [(none)]> create database oozie;
+    MariaDB [(none)]> create user 'oozie'@'%' identified by 'hive';
+    MariaDB [(none)]> grant all on *.* to 'oozie'@'host02' identified by 'xxxxxxx';
+    MariaDB [(none)]> flush privileges;
+@@@@@@
+
+2. 접속 프로그램 설치
+    (in host02, host03)
+    # yum -y install mariadb.x86_64
+
+    # mysql -h host01 -u ambari -p
+
+    MariaDB [(none)]> show databases;
+    MariaDB [(none)]> use ambari;
+    MariaDB [ambari]> exit
+
+3. mariadb를 위한 JDBC 드라이버 설치
+@@@    (in all hosts)
+@@@    # ll /usr/share/java/my*
+@@@    # yum search mysql-connector-java
+@@@    # yum -y install mysql-connector-java* <- 설치 버전(5.1.26)은 추후에 Hive 서비스 설치시 오류 발생!(cloudera 설치시에 오류발생, HDP는 아직 테스트하지 못했음)
+@@@    # ll /usr/share/java/my*
+
+    (in all hosts)
+    # ll /usr/share/java/my*
+    # wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.46.tar.gz
+    # tar zxvf mysql-connector-java-5.1.46.tar.gz 
+    # cd mysql-connector-java-5.1.46/
+    # cp -p mysql-connector-java-5.1.46.jar /usr/share/java/mysql-connector-java.jar
+
+
+-------------------------------------------------------------------------
+
+
+HDP 다운로드
+------------
+1. repo 다운로드
+    (in host01)
+    https://docs.cloudera.com/HDPDocuments/Ambari-2.7.4.0/bk_ambari-installation/content/ambari_repositories.html
+
+    # cd /etc/yum.repos.d/
+    # wget http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.7.4.0/ambari.repo
+    NOTE. 최신 버전인 2.7.5는 인증 과정이 필요함.
+
+    # cat ambari.repo
+
+2. amrari 서버 설치
+    1) 설치
+    (in host01)
+    # yum search postgresql-server
+    # yum install postgresql-server
+    # wget http://ro-bucharest-repo.bigstepcloud.com/hortonworks-repos/ambari/centos7/2.7.3.0/ambari/ambari-server-2.7.3.0-139.x86_64.rpm 
+    # rpm -Uvh ambari-server-2.7.3.0-139.x86_64.rpm 
+
+    2) 설정
+    (in host01)
+    # ls /usr/share/java/mysql-connector-java.jar
+    # ls /var/lib/ambari-server/resources/mysql-connector-java.jar    # <- 이때는 없음
+
+    # ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar
+    <실행예>
+    [root@host01]# ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar
+    Using python  /usr/bin/python
+    Setup ambari-server
+    Copying /usr/share/java/mysql-connector-java.jar to /var/lib/ambari-server/resources/mysql-connector-java.jar
+    If you are updating existing jdbc driver jar for mysql with mysql-connector-java.jar. Please remove the old driver jar, from all hosts. Restarting services that need the driver, will automatically copy the new jar to the hosts.
+    JDBC driver was successfully initialized.
+    Ambari Server 'setup' completed successfully.
+    [root@host01 ~]# 
+    # ls /var/lib/ambari-server/resources/mysql-connector-java.jar
+
+    # ambari-server setup
+    <실행예>
+    [root@host01 ~]# ambari-server setup
+    Using python  /usr/bin/python
+    Setup ambari-server
+    Checking SELinux...
+    SELinux status is 'disabled'
+    Customize user account for ambari-server daemon [y/n] (n)? y
+    Enter user account for ambari-server daemon (root):
+    Adjusting ambari-server permissions and ownership...
+    Checking firewall status...
+    Checking JDK...
+    [1] Oracle JDK 1.8 + Java Cryptography Extension (JCE) Policy Files 8
+    [2] Custom JDK
+    ==============================================================================
+    Enter choice (1): 2
+    WARNING: JDK must be installed on all hosts and JAVA_HOME must be valid on all hosts.
+    WARNING: JCE Policy files are required for configuring Kerberos security. If you plan to use Kerberos,please make sure JCE Unlimited Strength Jurisdiction Policy Files are valid on all hosts.
+    Path to JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk
+    Validating JDK on Ambari Server...done.
+    Check JDK version for Ambari Server...
+    JDK version found: 8
+    Minimum JDK version is 8 for Ambari. Skipping to setup different JDK for Ambari Server.
+    Checking GPL software agreement...
+    GPL License for LZO: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+    Enable Ambari Server to download and install GPL Licensed LZO packages [y/n] (n)? y
+    Completing setup...
+    Configuring database...
+    Enter advanced database configuration [y/n] (n)? y
+    Configuring database...
+    ==============================================================================
+    Choose one of the following options:
+    [1] - PostgreSQL (Embedded)
+    [2] - Oracle
+    [3] - MySQL / MariaDB
+    [4] - PostgreSQL
+    [5] - Microsoft SQL Server (Tech Preview)
+    [6] - SQL Anywhere
+    [7] - BDB
+    ==============================================================================
+    Enter choice (1): 3
+    Hostname (localhost): host01
+    Port (3306): 
+    Database name (ambari): 
+    Username (ambari): 
+    Enter Database Password (bigdata): ambari
+    Re-enter password: ambari
+    Configuring ambari database...
+    Should ambari use existing default jdbc /usr/share/java/mysql-connector-java.jar [y/n] (y)? 
+    Configuring remote database connection properties...
+    WARNING: Before starting Ambari Server, you must run the following DDL directly from the database shell to create the schema: /var/lib/ambari-server/resources/Ambari-DDL-MySQL-CREATE.sql
+    Proceed with configuring remote database connection properties [y/n] (y)? 
+    Extracting system views...
+    ambari-admin-2.7.3.0.139.jar
+    ....
+    Ambari repo file doesn't contain latest json url, skipping repoinfos modification
+    Adjusting ambari-server permissions and ownership...
+    Ambari Server 'setup' completed successfully.
+    [root@host01 ~]# 
+
+    (in host01)
+    # mysql -h host01 -u ambari -p
+
+    MariaDB [(none)]> use ambari;
+    MariaDB [ambari]> source /var/lib/ambari-server/resources/Ambari-DDL-MySQL-CREATE.sql
+    MariaDB [ambari]> show tables;
+    MariaDB [ambari]> exit;
+
+    3) 실행
+    (in host01)
+    # ambari-server start
+
+    <실행예>
+    [root@host01 ~]# ambari-server start
+    Using python  /usr/bin/python
+    Starting ambari-server
+    Ambari Server running with administrator privileges.
+    Organizing resource files at /var/lib/ambari-server/resources...
+    Ambari database consistency check started...
+    Server PID at: /var/run/ambari-server/ambari-server.pid
+    Server out at: /var/log/ambari-server/ambari-server.out
+    Server log at: /var/log/ambari-server/ambari-server.log
+    Waiting for server start.......................................
+    Server started listening on 8080
+
+    DB configs consistency check: no errors and warnings were found.
+    Ambari Server 'start' completed successfully.
+    [root@host01 ~]# 
+
+<- 로그는  /var/log/ambari-server/
+
+-------------------------------------------------------------------------
+
+
+확인
+----
+1. windows의 hosts파일에도 등록하자(C:\Windows\System32\drivers\etc\hosts)
+
+@@@    # cloudera
+@@@    192.168.58.101	server01.example.com	server01
+@@@    192.168.58.102	server02.example.com	server02
+@@@    192.168.58.103	server03.example.com	server03
+@@@    192.168.58.104	server04.example.com	server04
+@@@    192.168.58.105	server05.example.com	server05
+
+    # hortonworks
+    192.168.126.51	host01.cluster	host01
+    192.168.126.52	host02.cluster	host02
+    192.168.126.53	host03.cluster	host03
+    192.168.126.54	host04.cluster	host04
+    192.168.126.55	host05.cluster	host05
+
+    2. 에코 시스템 설치
+    
+    1) 웹브라우저에서 host01:8080 (192.168.126.51:8080)
+       초기 계정과 암호는 admin / admin
+
+    2) LAUNCH INSTALL WIZARD 클릭
+
+    3) Name your cluster:
+    HDP
+
+    4) Select Version
+    Public Repository에서 redhat7만 남기고 모두 지울것!
+
+    5) Install Option
+    Target Host:
+    host01.cluster
+    host02.cluster
+    host03.cluster
+
+    SSH Private Key는 host01의 root계정의 ~/.ssh/id_rsa 파일의 내용을 복사해서 붙여넣기.
+
+    *manual installation*
+    (in host01, hots02, host03)
+    # mkdir ~/work
+    # cd ~/work
+    # wget http://ro-bucharest-repo.bigstepcloud.com/hortonworks-repos/ambari/centos7/2.7.3.0/ambari/ambari-agent-2.7.3.0-139.x86_64.rpm
+    # rpm -Uvh ambari-agent-2.7.3.0-139.x86_64.rpm
+    # systemctl start ambari-agent
+
+    6) Confirm Hosts
+    NOTE. 5)에서 입력한 내용을 바탕으로 모든 호스트에 ambari-agent를 설치
+
+    <체크>
+    [root@host01 ~]# rpm -qa|grep ambari
+    ambari-agent-2.7.4.0-118.x86_64
+    ambari-server-2.7.4.0-118.x86_64
+    [root@host01 ~]# 
+
+    [root@host02 ~]# rpm -qa|grep ambari
+    ambari-agent-2.7.4.0-118.x86_64
+    [root@host02 ~]# 
+
+    [root@host03 ~]# rpm -qa|grep ambari
+    ambari-agent-2.7.4.0-118.x86_64
+    [root@host03 ~]# 
+
+    7) Choose Service
+    YARN+MapReduces2
+    ZooKeeper
+    Ambari Metrics
+
+    NOTE. 다른 서비스는 추후에 추가!
+
+    8) Assign Masters
+    default 상태 그대로
+
+    9) Assign Slaves and Clients
+    Data Node는 모두 선택
+
+    10) Customize Services
+    *Credentials
+    Grafana Admin : admin / admin
+    (Hive Database : hive / hive)
+    (Oozie Database: oozie / oozie)
+    Activity Explorer's Admin : () / admin
+
+    hive)
+    Hive Database: New MySQL
+    Database Name: hive
+    Database Username : hive
+    Database URL: jdbc:mysql://host02/hive?createDatabaseIfNotExist=true
+    Hive Database Type: mysql
+    JDBC Driver Class: com.mysql.jdbc.Driver
+    Database Password: ****
+
+    To use MySQL with Hive, you must download the https://dev.mysql.com/downloads/connector/j/ from MySQL. Once downloaded to the Ambari Server host, run:
+    ambari-server setup --jdbc-db=mysql --jdbc-driver=/path/to/mysql/com.mysql.jdbc.Driver
+
+    oozie)
+    Oozie Database: New Derby
+    Database Name: oozie
+    Database Username: oozie
+    Database URL: jdbc:derby:${oozie.data.dir}/${oozie.db.schema.name}-db;create=true
+    JDBC Driver class : org.apache.derby.jdbc.EmbeddedDriver
+    Database Password: *****
+
+    HDFS)
+    DATA DIR>>>
+    DataNode directories: /hadoop/hdfs/data
+    Namenode directories: /hadoop/hdfs/namenode
+    SecondaryNameNode Checkpoint directories: /hadoop/hdfs/namesecondary
+    NFSGateway dump directory: /tmp/.hdfs-nfs
+    NameNode Backup directory: /tmp/upgrades
+    JournalNode Edits directory: /haoop/hdfs/journalnode
+    NameNode Checkpoint Edits directory: ${dfs.namenode.checkpoint.dir}
+
+    LOG DIRS>>>
+    Hadoop Log Dir Prefix: /var/log/hadoop
+
+    PID DIRS>>>
+    Hadoop PID Dir Prefix: /var/run/hadoop
+
+    HIVE)
+    DATA DIRS>>>
+    Hive Metastore Warehouse directory: /warehouse/tablespace/managed/hive
+    Hive Exec Scratchdir: /tmp/hive
+    Hive User Install directory: /user/
+    TEZ Lib URIs: /hdp/apps/${hdp.version}/tez/tez.tar.gz
+
+    LOG DIRS>>>
+    Hive Log Dir: /var/log/hive
+    HiveServer2 Logging Operation Log Location: /tmp/hive/operation_logs
+
+    PID DIRS>>>
+    Hive PID Dir: /var/run/hive
+
+    ZOOKEEPER)
+    DIR DIRS>>>
+    Zookeeper diretory: /haoop/zookeeper
+
+    LOG DIRS>>>
+    Zookeeper Log Dir: /var/log/zookeeper
+
+    PID DIRS>>>
+    Zookeeper PID Dir: /var/run/zookeeper
+
+    <Accounts>
+
+    Please review these settings for Service Accounts
+
+    Use Ambari to Manage Service Accounts and Groups
+    Use Ambari to Manage Group Memberships
+    Use Ambari to Manage Service Accounts UID's
+
+    Users/Groups	Usernames
+    Smoke User	ambari-qa
+    Hadoop Group	hadoop
+    Ambari Metrics User	ams
+    HDFS User	hdfs
+    Proxy User Group	users
+    Hive User	hive
+    Kafka User	kafka
+    Mapreduce User	mapred
+    Oozie User	oozie
+    Livy2 Group	livy
+    Livy2 User	livy
+    Spark2 Group	spark
+    Spark2 User	spark
+    Sqoop User	sqoop
+    Tez User	tez
+    Yarn ATS User	yarn-ats
+    Yarn User	yarn
+    Zeppelin Group	zeppelin
+    Zeppelin User	zeppelin
+    ZooKeeper User	zookeeper
+
+    11) Review
+
+    12) Install, Start and Test
+
+    13) Summary
+-------------------------------------------------------------------------

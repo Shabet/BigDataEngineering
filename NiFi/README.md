@@ -3,6 +3,7 @@
 ## 0. 계획
 * nifi 계정으로 nifi 실행
 * zookeeper를 이용한 cluster 구성
+* [설치요약](<docs/01. 설치/설치편 04-Zookeeper Kafka Nifi 설치.pptx>)
 
 ## 1. 계정 추가
 ```

@@ -18,7 +18,10 @@ VMWare를 이용하여 3대의 Linux 서버를 구성
 ## 설치 S/W
 * Zookeeper: 3.5.9 버전 설치 (3.5.x branch 중 최신 버전)
 * Kafka: 2.13-2.7.0 버전 설치(scala-kafka 버전, * 2021-02-15 현재 가장 최신 버전)
+* NiFi: 1.11.4 버전 설치
 * Hadoop: 2.10.1 버전 설치
+* MariaDB: 10.5.9 버전 설치
+* Hive: 2.3.8 버전 설치
 > Kafka, NiFi는 Hadoop과는 별개로 설치가 가능
 
 ## 설치 상세

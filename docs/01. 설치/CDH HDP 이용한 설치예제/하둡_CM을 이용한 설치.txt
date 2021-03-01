@@ -1,0 +1,448 @@
+ref)
+https://docs.cloudera.com/documentation/enterprise/6/latest/topics/installation.html
+
+https://sungwookkang.com/1358
+https://joonyon.tistory.com/129
+
+리눅스 설정(CentOS7)
+--------------------
+o 리눅스 설치
+0. root 암호는 root
+   VMWare에서 network 설정은 bridge로 설정(이렇게 해야 외부에서 지금 설정한 리눅스로 접근이 가능함. IP는 호스트PC와 동일한 네트워크대역의 IP로 설정)
+
+1. 호스트명 변경(설치시 설정을 하였으면 불필요)
+    # echo "server01.cloudera.cdh" > /etc/hostname
+    NOTE. 각 호스트별로 server명을 변경
+
+2. /etc/hosts 설정
+    192.168.0.111 server01.cloudera.cdh server01
+    192.168.0.112 server02.cloudera.cdh server02
+    192.168.0.113 server03.cloudera.cdh server03
+    192.168.0.114 server04.cloudera.cdh server04
+    192.168.0.115 server05.cloudera.cdh server05
+
+3. 방화벽 중지
+    # systemctl status firewalld
+    # systemctl stop firewalld
+    # systemctl disable firewalld
+
+4. SELinux 기능 제거
+    # setenforce 0
+    # vi /etc/selinux/config
+    SELINUX=disabled
+
+5. NTP 활성화 : (optional)CentOS7에 기본으로 탑재된 chronyd 대신 ntpd를 설치
+    # yum -y install ntp
+    # systemctl stop chronyd
+    # systemctl disable chronyd
+    # systemctl start ntpd
+    # systemctl enable ntpd
+
+6. openjdk 업데이트 및 jdk-devel설치
+    # java -version
+    # rpm -qa|grep openjdk
+    # rpm -e java-1.7.0-openjdk-1.7.0.261-2.6.22.2.el7_8.x86_64
+    # rpm -e java-1.7.0-openjdk-headless-1.7.0.261-2.6.22.2.el7_8.x86_64
+    # yum -y install java-1.8.0-openjdk.x86_64
+    # yum -y install yum install java-1.8.0-openjdk-devel.x86_64
+    # java -version
+    # rpm -qa|grep openjdk
+
+    # (export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk)
+
+7. sysctl 설정
+    (vm.swappiness 을 20에서 10으로 변경)
+    # sysctl vm.swappiness
+    # sysctl vm.swappiness=10
+    # sysctl vm.swappiness
+    # echo "vm.swappiness=10" >> /etc/sysctl.conf
+    # sysctl -p
+
+    (Disabling Transparent Hugepages (THP))
+    # echo never > /sys/kernel/mm/transparent_hugepage/defrag
+    # echo never > /sys/kernel/mm/transparent_hugepage/enabled
+    # cat /etc/rc.local
+    # echo "echo never > /sys/kernel/mm/transparent_hugepage/defrag" >> /etc/rc.local
+    # echo "echo never > /sys/kernel/mm/transparent_hugepage/enabled" >> /etc/rc.local
+    # cat /etc/rc.local
+
+8. ssh 접속 지연 해결
+    # vi /etc/ssh/sshd_config
+
+    #UseDNS yes 이부분을
+    UseDNS no 수정
+
+    # systemctl restart sshd
+
+9. 중지
+    (in all hosts)
+    # shutdown -h now
+
+o 복제
+1. VMWare에서 위에서 설치한 리눅스를 복제
+
+2. 기동
+
+3. IP 설정 : 중복된 UUID를 재설정
+    # cd /etc/sysconfig/network-scripts/
+    # uuidgen ens33 >> ifcfg-ens33
+    # vi ifcfg-ens33
+    ...
+    UUID=
+    IPADDR=
+    ...
+
+    # systemctl restart network
+
+4. ssh
+    [root@server01.cloudera.cdh ~]# ssh-keygen -t rsa
+    [root@server02.cloudera.cdh ~]# ssh-keygen -t rsa
+    [root@server03.cloudera.cdh ~]# ssh-keygen -t rsa
+
+    # ssh-copy-id -i ~/.ssh/id_rsa.pub root@server01.cloudera.cdh
+    # ssh-copy-id -i ~/.ssh/id_rsa.pub root@server02.cloudera.cdh
+    # ssh-copy-id -i ~/.ssh/id_rsa.pub root@server03.cloudera.cdh
+
+5. reboot
+    (in all hosts)
+    # reboot
+
+-------------------------------------------------------------------------
+
+
+MariaDB 설치 및 설정
+--------------------
+    1. DB 설치
+    (in server01)
+    # yum -y install mariadb-server
+
+    # vi /etc/my.cnf
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[mysql]
+default-character-set = utf8
+
+[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+transaction-isolation = READ-COMMITTED
+# Disabling symbolic-links is recommended to prevent assorted security risks;
+# to do so, uncomment this line:
+symbolic-links = 0
+# Settings user and group are ignored when systemd is used.
+# If you need to run mysqld under a different user or group,
+# customize your systemd unit file for mariadb according to the
+# instructions in http://fedoraproject.org/wiki/Systemd
+
+key_buffer = 32M
+# (deprecated) key_buffer_size = 32M
+max_allowed_packet = 32M
+thread_stack = 256K
+thread_cache_size = 64
+query_cache_limit = 8M
+query_cache_size = 64M
+query_cache_type = 1
+
+max_connections = 550
+#expire_logs_days = 10
+#max_binlog_size = 100M
+
+#log_bin should be on a disk with enough free space.
+#Replace '/var/lib/mysql/mysql_binary_log' with an appropriate path for your
+#system and chown the specified folder to the mysql user.
+log_bin=/var/lib/mysql/mysql_binary_log
+
+#In later versions of MariaDB, if you enable the binary log and do not set
+#a server_id, MariaDB will not start. The server_id must be unique within
+#the replicating group.
+server_id=1
+
+binlog_format = mixed
+
+read_buffer_size = 2M
+read_rnd_buffer_size = 16M
+sort_buffer_size = 8M
+join_buffer_size = 8M
+
+# InnoDB settings
+innodb_file_per_table = 1
+innodb_flush_log_at_trx_commit  = 2
+innodb_log_buffer_size = 64M
+innodb_buffer_pool_size = 4G
+innodb_thread_concurrency = 8
+innodb_flush_method = O_DIRECT
+innodb_log_file_size = 512M
+
+##
+init_connect = "SET collation_connection = utf8_general_ci"
+init_connect = "SET NAMES utf8"
+character-set-server = utf8
+collation-server = utf8_general_ci
+
+[client]
+default-character-set = utf8
+
+[mysqld_safe]
+log-error=/var/log/mariadb/mariadb.log
+pid-file=/var/run/mariadb/mariadb.pid
+
+#
+# include all files from the config directory
+#
+!includedir /etc/my.cnf.d
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    # systemctl start mariadb
+    # systemctl enable mariadb
+
+    (root 패스워드 및 기타 보안 설정)
+    # /usr/bin/mysql_secure_installation
+    NOTE. 일단 패스워드는 계정과 동일하게...
+    <실행예>
+    [root@server01 ~]# /usr/bin/mysql_secure_installation
+
+    NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB
+          SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!
+
+    In order to log into MariaDB to secure it, we'll need the current
+    password for the root user.  If you've just installed MariaDB, and
+    you haven't set the root password yet, the password will be blank,
+    so you should just press enter here.
+
+    Enter current password for root (enter for none): 
+    OK, successfully used password, moving on...
+
+    Setting the root password ensures that nobody can log into the MariaDB
+    root user without the proper authorisation.
+
+    Set root password? [Y/n] y
+    New password: 
+    Re-enter new password: 
+    Password updated successfully!
+    Reloading privilege tables..
+     ... Success!
+
+
+    By default, a MariaDB installation has an anonymous user, allowing anyone
+    to log into MariaDB without having to have a user account created for
+    them.  This is intended only for testing, and to make the installation
+    go a bit smoother.  You should remove them before moving into a
+    production environment.
+
+    Remove anonymous users? [Y/n] y
+     ... Success!
+
+    Normally, root should only be allowed to connect from 'localhost'.  This
+    ensures that someone cannot guess at the root password from the network.
+
+    Disallow root login remotely? [Y/n] n
+     ... skipping.
+
+    By default, MariaDB comes with a database named 'test' that anyone can
+    access.  This is also intended only for testing, and should be removed
+    before moving into a production environment.
+
+    Remove test database and access to it? [Y/n] y
+     - Dropping test database...
+     ... Success!
+     - Removing privileges on test database...
+     ... Success!
+
+    Reloading the privilege tables will ensure that all changes made so far
+    will take effect immediately.
+
+    Reload privilege tables now? [Y/n] y
+     ... Success!
+
+    Cleaning up...
+
+    All done!  If you've completed all of the above steps, your MariaDB
+    installation should now be secure.
+
+    Thanks for using MariaDB!
+    [root@server01 ~]# 
+
+    # mysql -u root -p
+    Enter password: [암호입력]
+
+    NOTE. default 계정
+    https://docs.cloudera.com/documentation/enterprise/6/latest/topics/install_cm_mariadb.html
+
+    MariaDB [(none)]> create database scm DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+    MariaDB [(none)]> create database metastore DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+    MariaDB [(none)]> create database hue DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+    MariaDB [(none)]> create database rman DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+
+@@@    MariaDB [(none)]> create user 'scm'@'%' identified by 'scm';
+@@@    MariaDB [(none)]> create user 'hive'@'%' identified by 'hive';
+@@@    MariaDB [(none)]> create user 'hue'@'%' identified by 'hue';
+@@@    MariaDB [(none)]> create user 'rman'@'%' identified by 'rman';
+
+    MariaDB [(none)]> grant all privileges on scm.* to 'scm'@'%' identified by 'scm';
+    MariaDB [(none)]> grant all privileges on metastore.* to 'hive'@'%' identified by 'hive';
+    MariaDB [(none)]> grant all privileges on hue.* to 'hue'@'%' identified by 'hue';
+    MariaDB [(none)]> grant all privileges on rman.* to 'rman'@'%' identified by 'rman';
+    MariaDB [(none)]> flush privileges;
+
+    MariaDB [(none)]> exit
+
+2. 접속 프로그램 설치
+    (in server02, server03)
+    # yum -y install mariadb
+
+    # mysql -h server01.cloudera.cdh -u scm -p
+
+    MariaDB [(none)]> show databases;
+    MariaDB [(none)]> use scm;
+    MariaDB [scm]> exit
+
+3. mariadb를 위한 JDBC 드라이버 설치
+@@@    (in all hosts)
+@@@    # ll /usr/share/java/my*
+@@@    # yum search mysql-connector-java
+@@@    # yum -y install mysql-connector-java* <- 설치 버전(5.1.26)은 추후에 Hive 서비스 설치시 오류 발생!
+@@@    # ll /usr/share/java/my*
+
+    (in all hosts)
+    # ll /usr/share/java/my*
+    # wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.46.tar.gz
+    # tar zxvf mysql-connector-java-5.1.46.tar.gz 
+    # cd mysql-connector-java-5.1.46/
+    # cp -p mysql-connector-java-5.1.46.jar /usr/share/java/mysql-connector-java.jar
+
+
+-------------------------------------------------------------------------
+
+
+CM 다운로드
+------------
+    1. repo 다운로드
+    (in server01)
+    # cd /etc/yum.repos.d/
+    # wget https://archive.cloudera.com/cm6/6.3.1/redhat7/yum/cloudera-manager.repo
+    NOTE. 6.3.1 이후 버전은 인증 과정이 필요함.
+
+    2. 설치
+    # yum install cloudera-manager-daemons cloudera-manager-agent cloudera-manager-server
+
+@@@ 여기까지 하고 VM복제..
+    3. Enable Auto-TLS
+    # JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk /opt/cloudera/cm-agent/bin/certmanager setup --configure-services
+
+    4. 클라우드 매니저를 위한 DB설정 : 실행후 scm의 스키마에 테이블이 생성됨.
+    # /opt/cloudera/cm/schema/scm_prepare_database.sh mysql scm scm
+    (DB서버와 master가 다른 경우)
+    # (/opt/cloudera/cm/schema/scm_prepare_database.sh mysql -h server02.cloudera.cdp --scm-host server01.cloudera.cdp scm scm)
+
+    <실행예>
+    [root@server01 ~]# /opt/cloudera/cm/schema/scm_prepare_database.sh mysql scm scm
+    Enter SCM password: 
+    JAVA_HOME=/usr/lib/jvm/java-openjdk
+    Verifying that we can write to /etc/cloudera-scm-server
+    Creating SCM configuration file in /etc/cloudera-scm-server
+    Executing:  /usr/lib/jvm/java-openjdk/bin/java -cp /usr/share/java/mysql-connector-java.jar:/usr/share/java/oracle-connector-java.jar:/usr/share/java/postgresql-connector-java.jar:/opt/cloudera/cm/schema/../lib/* com.cloudera.enterprise.dbutil.DbCommandExecutor /etc/cloudera-scm-server/db.properties com.cloudera.cmf.db.
+    [                          main] DbCommandExecutor              INFO  Successfully connected to database.
+    All done, your SCM database is configured correctly!
+    [root@server01 ~]# 
+    
+@@@    [root@server01 ~]# mysql -u scm -p
+@@@    Enter password: 
+@@@    MariaDB [(none)]> use scm;
+@@@    MariaDB [scm]> show tables;
+
+    4. 설치 시작
+    (in server01)
+    # systemctl start cloudera-scm-server
+    # tail -f /var/log/cloudera-scm-server/cloudera-scm-server.log
+
+확인
+----
+    1. 에코 시스템 설치
+    windows의 hosts파일에도 등록하자(C:\Windows\System32\drivers\etc\hosts)
+
+    ##### cloudera cluster #####
+    192.168.0.111	server01.cloudera.cdh	server01
+    192.168.0.112	server02.cloudera.cdh	server02
+    192.168.0.113	server03.cloudera.cdh	server03
+    192.168.0.114	server04.cloudera.cdh	server04
+    192.168.0.115	server05.cloudera.cdh	server05
+
+    1) 웹브라우저에서 https://server01.cloudera.cdh:7183/
+       초기 계정과 암호는 admin / admin
+       NOTE. http:// 로 연결하면 안됨!
+
+    Enterpreise Cloudera Enterprise 체험판을 선택(default)
+
+    2. 설치
+    1) 클라스터 이름:
+    CM_Cluster
+
+    2) Specify Hosts
+    server01.cloudera.cdh
+    server02.cloudera.cdh
+    server03.cloudera.cdh
+
+    3) Respository 선택
+
+    4) JDK 설치 옵션
+    !!!체크하지 말것!!!! <- 체크시에는 OracleJDK가 설치되고, 미체크시에는 미리 설치한 OpenJDK를 사용하게 됨.
+
+    5) SSH 로그인 정보
+    암흐를 지정해도 되고, 아니면 실행프로그램을 실행한 호스트에서 root 계정의 ~/.ssh/id_rsa 내용을 복사해서 붙여 넣어도 된다.
+
+    6) Install Agents
+
+    7) Install Parcels
+
+    8) Select Services
+    ...모든 서비스는 차후에 설치...
+    HDFS
+    Yarn (MR2 included)
+    ZooKeeper
+
+    9) 역할 할당 사용자 지정
+    HDFS>
+    Namenode: server01
+    Secondary Namenode: server02
+    Balancer: server01
+    HttPFS: (선택안함)
+    NFS Gateway: (선택안함)
+    DataNode: 모든 호스트
+
+    Cloudera Management Service>
+    Service Monitor: server01
+    Activity Monitor: (선택안함)
+    Host Monitor: server01
+    Reports Manager: server01 <= DB 연결 필요(default 접속 정보: rman rman rman)
+    Alert Publisher: server01
+    Telemetry Publisher: (선택안함)
+
+    YARN>
+    JobHistory Server: server02
+    NodeManager: DataNode
+
+    ZooKeeper>
+    Server: server01, server02
+
+    10) 데이터베이스 설정
+    Reports Manager를 위한 접속 정보: rman, rman, rman 입력후 테스트 연결 수행
+
+    11) 변경 내용 검토
+
+    12) 명령 세부 정보
+
+    13) 요약
+    ************************************************************************
+
+    <<<<<<추가 서비스 설치>>>>>>
+
+    o Hive 설치
+    org.apache.hadoop.hive.metastore.HiveMetaException: Failed to retrieve schema tables from Hive Metastore DB,Not supported
+    => mysql-connector-java.jar 버전 오류시 해결 방법
+
+    [root@server01 work]# wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.46.tar.gz
+    [root@server01 work]# tar zxvf mysql-connector-java-5.1.46.tar.gz 
+    [root@server01 work]# cd mysql-connector-java-5.1.46/
+    [root@server01 mysql-connector-java-5.1.46]# mv /usr/share/java/mysql-connector-java.jar /usr/share/java/mysql-connector-java.jar.orig
+    [root@server01 mysql-connector-java-5.1.46]# cp -p mysql-connector-java-5.1.46.jar /usr/share/java/mysql-connector-java.jar 
+
+-------------------------------------------------------------------------
+
