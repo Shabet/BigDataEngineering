@@ -1,20 +1,25 @@
 # CentOS7 OS 설정
 
-## 방화벽 관련 설정 : 중지
-1. 방화벽 중지
+## 0. 계획
+* 방화벽 관련 설정은 모두 중지
+* Java는 OpenJDK8 설치
+
+## 1. 방화벽 관련 설정 : 중지
+* 방화벽 중지
 ```
 # systemctl status firewalld
 # systemctl stop firewalld
 # systemctl disable firewalld
 ```
-2. SELinux 기능 제거
+
+* SELinux 기능 제거
 ```
 # setenforce 0
 # vi /etc/selinux/config
 SELINUX=disabled
 ```
 
-## Java 설치 : OpenJDK8
+## 2. Java 설치 : OpenJDK8
 ```
 # rpm -qa |grep openjdk
 # rpm -e java-1.7.0-openjdk-1.7.0.261-2.6.22.2.el7_8.x86_64
@@ -29,7 +34,7 @@ OpenJDK Runtime Environment (build 1.8.0_282-b08)
 OpenJDK 64-Bit Server VM (build 25.282-b08, mixed mode)
 ```
 
-## hosts 파일 설정
+## 3. hosts 파일 설정
 ```
 # vi /etc/hosts
 
@@ -41,7 +46,7 @@ OpenJDK 64-Bit Server VM (build 25.282-b08, mixed mode)
 ```
 > NOTE. 호스트3대를 이용하여 zookeeper와 kafka를 설치
 
-## IPv4 설정
+## 4. IPv4 설정
 ```
 # vi /etc/sysctl.conf
 net.ipv6.conf.all.disable_ipv6 = 1
