@@ -1,0 +1,57 @@
+#
+# These groups are read by MariaDB server.
+# Use it for options that only the server (but not clients) should see
+#
+# See the examples of server my.cnf files in /usr/share/mysql/
+#
+
+# this is read by the standalone daemon and embedded servers
+[server]
+
+# this is only for the mysqld standalone daemon
+[mysqld]
+
+#
+# * Galera-related settings
+#
+[galera]
+# Mandatory settings
+wsrep_on=ON
+wsrep_provider=/usr/lib64/galera-4/libgalera_smm.so
+wsrep_cluster_address="gcomm://peter-kafka001,peter-kafka002"
+binlog_format=row
+default_storage_engine=InnoDB
+innodb_autoinc_lock_mode=2
+#
+# Allow server to accept connections on all interfaces.
+#
+bind-address=0.0.0.0
+#
+# Optional setting
+#wsrep_slave_threads=1
+#innodb_flush_log_at_trx_commit=0
+
+# Logical cluster name. Should be the same for all nodes.
+#wsrep_cluster_name="mariadb_lightningdb_cluster" ## <-[ADD]
+wsrep_cluster_name="SCcomz_cluster" ## <-[ADD]
+
+# Human-readable node name (non-unique). Hostname by default.
+#wsrep_node_name=
+
+# Base replication <address|hostname>[:port] of the node.
+# The values supplied will be used as defaults for state transfer receiving,
+# listening ports and so on. Default: address of the first network interface.
+wsrep_node_address=peter-kafka001 ## <-[ADD]
+
+# this is only for embedded server
+[embedded]
+
+# This group is only read by MariaDB servers, not by MySQL.
+# If you use the same .cnf file for MySQL and MariaDB,
+# you can put MariaDB-only options here
+[mariadb]
+
+# This group is only read by MariaDB-10.5 servers.
+# If you use the same .cnf file for MariaDB of different versions,
+# use this group for options that older servers don't understand
+[mariadb-10.5]
