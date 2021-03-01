@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+  <!--
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://peter-cluster</value>
+  </property>
+  -->
+  <property>
+    <name>hive.exec.stagingdir</name>
+    <value>/tmp/hive-staging/.hive</value>
+  </property>
+
+  <!-- Metastore Server -->
+  <property>
+    <name>hive.metastore.uris</name>
+    <value>thrift://peter-kafka001:9083,thrift://peter-kafka002:9083</value>
+  </property>
+  <property>
+    <name>hive.metastore.execute.setugi</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.metastore.schema.verification</name>
+    <value>false</value>
+  </property>
+
+  <!-- Authorization -->
+  <!--
+  <property>
+    <name>hive.users.in.admin.role</name>
+    <value>hive</value>
+  </property>
+  <property>
+    <name>hive.security.authorization.enabled</name>
+    <value>true</value>
+    <description>enable or disable the Hive client authorization</description>
+  </property>
+  <property>
+    <name>hive.security.authorization.manager</name>
+    <value>org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizerFactory</value>
+  </property>
+  -->
+
+  <!-- Authentication -->
+  <property>
+    <name>hive.security.authenticator.manager</name>
+    <value>org.apache.hadoop.hive.ql.security.SessionStateUserAuthenticator</value>
+  </property>
+  <property>
+    <name>hive.server2.enable.doAs</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.server2.authentication</name>
+    <value>NONE</value> <!-- ### CUSTOM, NONE -->
+  </property>
+
+  <!-- Hive Server2 -->
+  <property>
+    <name>hive.server2.webui.port</name>
+    <value>0</value>
+  </property>
+  <property>
+    <name>hive.server2.logging.operation.enabled</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>hive.server2.thrift.min.worker.threads</name>
+    <value>1</value>
+  </property>
+  <property>
+    <name>hive.server2.thrift.max.worker.threads</name>
+    <value>50</value>
+  </property>
+  <property>
+    <name>hive.server2.close.session.on.disconnect</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.server2.session.check.interval</name>
+    <value>5m</value>
+  </property>
+  <property>
+    <name>hive.server2.idle.operation.timeout</name>
+    <value>1h</value>
+  </property>
+  <property>
+    <name>hive.server2.idle.session.timeout</name>
+    <value>1d</value>
+  </property>
+
+  <!-- Yarn Queue -->
+  <property>
+    <name>mapreduce.job.queuename</name>
+    <value>default</value>
+  </property>
+
+  <!-- etc... -->
+  <property>
+    <name>hive.strict.checks.large.query</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.merge.smallfiles.avgsize</name>
+    <value>4194304</value>
+  </property>
+  <property>
+    <name>hive.merge.mapredfiles</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hive.resultset.use.unique.column.names</name>
+    <value>false</value>
+  </property>
+</configuration>

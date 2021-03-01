@@ -28,6 +28,7 @@ VMWare를 이용하여 3대의 Linux 서버를 구성
 * [NiFi 설치](NiFi/README.md)
 * [Hadoop 설치](Hadoop/README.md)
 * [MariaDB 설치](MariaDB/README.md)
+* [Hive 설치](Hive/README.md)
 
 ___
 .END OF README
