@@ -13,7 +13,7 @@ VMWare를 이용하여 3대의 Linux 서버를 구성
 |:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |peter-kafka001|192.168.126.71|O|O|O|O|O|O|O|
 |peter-kafka002|192.168.126.72|O|O|O|O|O|O||
-|peter-kafka003|192.168.126.73|||O|O||O||
+|peter-kafka003|192.168.126.73|||O|O|O|O||
 
 ## 설치 S/W
 * Zookeeper: 3.5.9 버전 설치 (3.5.x branch 중 최신 버전)
@@ -22,7 +22,9 @@ VMWare를 이용하여 3대의 Linux 서버를 구성
 * Hadoop: 2.10.1 버전 설치
 * MariaDB: 10.5.9 버전 설치
 * Hive: 2.3.8 버전 설치
-> Kafka, NiFi는 Hadoop과는 별개로 설치가 가능
+> NOTE. Kafka, NiFi는 Hadoop과는 별개로 설치가 가능
+
+> 설치과정은 Zookeeper -> Hadoop -> MariaDB -> Hive -> Spark 순으로 설치
 
 ## 설치 상세
 * [OS 설치](CentOS7/README.md)
