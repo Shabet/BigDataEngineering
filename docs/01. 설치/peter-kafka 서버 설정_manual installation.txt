@@ -8,7 +8,7 @@ ref) https://eyeballs.tistory.com/289
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk/
 
 
-o ¼­¹ö¹ú ¼³Ä¡ S/W
+o ì„œë²„ë²Œ ì„¤ì¹˜ S/W
 
   host         |     IP         | MariaDB | Hive | Zookeeper | Kafka  | NiFi   |Hadoop | Spark
 ---------------+----------------+---------+------+-----------+--------+--------+-------+-------
@@ -17,27 +17,27 @@ peter-kafka002 | 192.168.126.72 |    O    |   O  |     O     |   O    |   O    |
 peter-kafka003 | 192.168.126.73 |         |      |     O     |   O    |        |   O   |       
 ---------------+----------------+---------+------+-----------+--------+--------+-------+--------
 
-¼³Ä¡ ÇÁ·Î±×·¥Àº /opt¿¡ ¼³Ä¡
+ì„¤ì¹˜ í”„ë¡œê·¸ë¨ì€ /optì— ì„¤ì¹˜
 
-¾Æ·¡ÀÇ ¼ø¼­´ë·Î ¼³Ä¡)
-Zookeeper: 3.5.9 ¹öÀü ¼³Ä¡ (3.5.x branch Áß ÃÖ½Å ¹öÀü)
-Kafka: 2.13-2.7.0 ¹öÀü ¼³Ä¡(scala-kafka ¹öÀü, 2021-02-15 ÇöÀç °¡Àå ÃÖ½Å ¹öÀü)
-Hadoop: 2.10.1 ¹öÀü ¼³Ä¡
+ì•„ë˜ì˜ ìˆœì„œëŒ€ë¡œ ì„¤ì¹˜)
+Zookeeper: 3.5.9 ë²„ì „ ì„¤ì¹˜ (3.5.x branch ì¤‘ ìµœì‹  ë²„ì „)
+Kafka: 2.13-2.7.0 ë²„ì „ ì„¤ì¹˜(scala-kafka ë²„ì „, 2021-02-15 í˜„ì¬ ê°€ì¥ ìµœì‹  ë²„ì „)
+Hadoop: 2.10.1 ë²„ì „ ì„¤ì¹˜
 
 
-OS¼³Á¤
+OSì„¤ì •
 ======
-o ¹æÈ­º® ÁßÁö
+o ë°©í™”ë²½ ì¤‘ì§€
     # systemctl status firewalld
     # systemctl stop firewalld
     # systemctl disable firewalld
 
-o SELinux ±â´É Á¦°Å
+o SELinux ê¸°ëŠ¥ ì œê±°
     # setenforce 0
     # vi /etc/selinux/config
     SELINUX=disabled
 
-Java ¼³Ä¡
+Java ì„¤ì¹˜
 =========
 # rpm -qa |grep openjdk
 # rpm -e java-1.7.0-openjdk-1.7.0.261-2.6.22.2.el7_8.x86_64
@@ -52,20 +52,20 @@ OpenJDK Runtime Environment (build 1.8.0_282-b08)
 OpenJDK 64-Bit Server VM (build 25.282-b08, mixed mode)
 
 
-hosts ÆÄÀÏ ¼³Á¤
+hosts íŒŒì¼ ì„¤ì •
 ===============
 # vi /etc/hosts
 
-##### Kafka(VM Å×½ºÆ®) #####
+##### Kafka(VM í…ŒìŠ¤íŠ¸) #####
 192.168.126.71	peter-kafka001	peter-zk001
 192.168.126.72	peter-kafka002	peter-zk002
 192.168.126.73	peter-kafka003	peter-zk003
 192.168.126.79	peter-client
 
-NOTE. È£½ºÆ®3´ë¸¦ ÀÌ¿ëÇÏ¿© zookeeper¿Í kafka¸¦ ¼³Ä¡
+NOTE. í˜¸ìŠ¤íŠ¸3ëŒ€ë¥¼ ì´ìš©í•˜ì—¬ zookeeperì™€ kafkaë¥¼ ì„¤ì¹˜
 
 
-IPv4 ¼³Á¤
+IPv4 ì„¤ì •
 ==========
 # vi /etc/sysctl.conf
 net.ipv6.conf.all.disable_ipv6 = 1
@@ -74,13 +74,13 @@ net.ipv6.conf.all.disable_ipv6 = 1
 ref) https://stackoverflow.com/questions/11850655/how-can-i-disable-ipv6-stack-use-for-ipv4-ips-on-jre
 
 
-Zookeeper ¼³Ä¡
+Zookeeper ì„¤ì¹˜
 ==============
-1. °èÁ¤ Ãß°¡
+1. ê³„ì • ì¶”ê°€
 # groupadd -g 2181 zookeepeer
 # useradd zookeeper -u 2181 -g zookeeper
 
-2. ¼³Ä¡
+2. ì„¤ì¹˜
 # mkdir ~/work
 # cd ~/work
 # wget https://downloads.apache.org/zookeeper/zookeeper-3.5.9/apache-zookeeper-3.5.9-bin.tar.gz
@@ -88,7 +88,7 @@ Zookeeper ¼³Ä¡
 # tar zxvf ~/work/apache-zookeeper-3.5.9-bin.tar.gz
 # ln -s apache-zookeeper-3.5.9-bin zookeeper
 
-3. ÀúÀå¼Ò ¼³Á¤
+3. ì €ì¥ì†Œ ì„¤ì •
 # mkdir /zkdata
 
 in peter-kafka001,
@@ -98,7 +98,7 @@ in peter-kafka002,
 in peter-kafka003,
 [root@peter-kafka003]# echo 3 > /zkdata/myid
 
-4. ¼³Á¤
+4. ì„¤ì •
 # cd /opt/zookeeper/conf
 # cp -p zoo_sample.cfg zoo.cfg
 # vi zoo.cfg
@@ -113,12 +113,12 @@ server.3=peter-zk003:2888:3888
 ...
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-5. ½ÇÇà °èÁ¤ ¼³Á¤
+5. ì‹¤í–‰ ê³„ì • ì„¤ì •
 # chown -R zookeeper:zookeeper /zkdata/
 # chown -R zookeeper:zookeeper /opt/apache-zookeeper-3.5.9-bin/
 # chown -R zookeeper:zookeeper /opt/zookeeper
 
-6. ÀÚµ¿ ½ÇÇà µî·Ï(systemd)
+6. ìë™ ì‹¤í–‰ ë“±ë¡(systemd)
 # vi /etc/systemd/system/zookeeper-server.service
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 [Unit]
@@ -140,55 +140,55 @@ ExecStop=/opt/zookeeper/bin/zkServer.sh stop
 WantedBy=multi-user.target
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-7. ½ÃÀÛ
+7. ì‹œì‘
 # systemctl daemon-reload
 # systemctl start zookeeper-server.service
 # systemctl status zookeeper-server.service
 
-8. È®ÀÎ
+8. í™•ì¸
 # jps
 # ps -ef|grep zookeeper
 # netstat -ntlp|grep 2181
-tcp        0      0 0.0.0.0:2181            0.0.0.0:*               LISTEN      2715/java           #<- tcp6ÀÌ ¾Æ´Ñ tcpÀÎÁö ¿©ºÎµµ È®ÀÎ!
+tcp        0      0 0.0.0.0:2181            0.0.0.0:*               LISTEN      2715/java           #<- tcp6ì´ ì•„ë‹Œ tcpì¸ì§€ ì—¬ë¶€ë„ í™•ì¸!
 # netstat -ntlp|grep 9001
 tcp        0      0 0.0.0.0:9001            0.0.0.0:*               LISTEN      46237/java     
 # su - zookeeper
 $ /opt/zookeeper/bin/zkCli.sh
 ls /
 
-9. ½Ã½ºÅÛ Àç½ÃÀÛ½Ã ÀÚµ¿ ½ÇÇà µî·Ï
+9. ì‹œìŠ¤í…œ ì¬ì‹œì‘ì‹œ ìë™ ì‹¤í–‰ ë“±ë¡
 # systemctl enable zookeeper-server.service
 
-10. ÆíÀÇ¸¦ À§ÇÑ °æ·Î Ãß°¡
+10. í¸ì˜ë¥¼ ìœ„í•œ ê²½ë¡œ ì¶”ê°€
 # vi /etc/profile.d/zookeeper.sh
 export PATH=$PATH:/opt/zookeeper/bin
 
 .END OF ZOOKEEPER
 
 
-Kafka ¼³Ä¡
+Kafka ì„¤ì¹˜
 ==========
-1. °èÁ¤ Ãß°¡
+1. ê³„ì • ì¶”ê°€
 # groupadd -g 9092 kafka
 # useradd kafka -u 9092 -g kafka
 
-2. ¼³Ä¡
+2. ì„¤ì¹˜
 # cd ~/work
 # wget https://archive.apache.org/dist/kafka/2.7.0/kafka_2.13-2.7.0.tgz
 # cd /opt
 # tar zxvf ~/work/kafka_2.13-2.7.0.tgz
 # ln -s kafka_2.13-2.7.0 kafka
 
-3. ÀúÀå¼Ò ¼³Á¤
+3. ì €ì¥ì†Œ ì„¤ì •
 # mkdir /kfdata1 /kfdata2
 
-4. ¼³Á¤
+4. ì„¤ì •
 # cd /opt/kafka/config
 # cp -p server.properties server.properties.orig
 # vi server.properties
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ...
-broker.id=1 #<- 1 or 2 or 3(°¢ È£½ºÆ®¸¶´Ù ´Ù¸£°Ô ¼³Á¤)
+broker.id=1 #<- 1 or 2 or 3(ê° í˜¸ìŠ¤íŠ¸ë§ˆë‹¤ ë‹¤ë¥´ê²Œ ì„¤ì •)
 log.dirs=/kfdata1,/kfdata2
 zookeeper.connect=peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka
 ...
@@ -197,13 +197,13 @@ zookeeper.connect=peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka
 # vi jmx
 JMX_PORT=9999
 
-5. ½ÇÇà °èÁ¤ ¼³Á¤
+5. ì‹¤í–‰ ê³„ì • ì„¤ì •
 # chown -R kafka:kafka /kfdata1/
 # chown -R kafka:kafka /kfdata2/
 # chown -R kafka:kafka /opt/kafka_2.13-2.7.0/
 # chown -R kafka:kafka /opt/kafka
 
-6. ÀÚµ¿ ½ÇÇà µî·Ï(systemd)
+6. ìë™ ì‹¤í–‰ ë“±ë¡(systemd)
 # vi /etc/systemd/system/kafka-server.service
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 [Unit]
@@ -223,62 +223,62 @@ ExecStop=/opt/kafka/bin/kafka-server-stop.sh
 EnvironmentFile=/opt/kafka/config/jmx
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-7. ½ÃÀÛ
+7. ì‹œì‘
 # systemctl daemon-reload
 # systemctl start kafka-server.service
 # systemctl status kafka-server.service
 
-8. È®ÀÎ
+8. í™•ì¸
 # jps
 # ps -ef|grep kafka
 # netstat -ntlp |grep 9092
-tcp        0      0 0.0.0.0:9092            0.0.0.0:*               LISTEN      3751/java       #<- Kafka ±âµ¿ È®ÀÎ
-# /opt/zookeeper/bin/zkCli.sh # <- ¸ğµç ¼­¹ö¿¡¼­ È®ÀÎ
+tcp        0      0 0.0.0.0:9092            0.0.0.0:*               LISTEN      3751/java       #<- Kafka ê¸°ë™ í™•ì¸
+# /opt/zookeeper/bin/zkCli.sh # <- ëª¨ë“  ì„œë²„ì—ì„œ í™•ì¸
 [zk: localhost:2181(CONNECTED) 1] ls /peter-kafka/brokers/ids
 [1, 2, 3]
 
-9. ·Î±× È®ÀÎ
-o Kafka ·Î±× È®ÀÎ
+9. ë¡œê·¸ í™•ì¸
+o Kafka ë¡œê·¸ í™•ì¸
 # tail -F /opt/kafka/logs/server.log
 
-o Kafka ·Îµå½Ã Config È®ÀÎ
+o Kafka ë¡œë“œì‹œ Config í™•ì¸
 # cat /opt/kafka/logs/server.log
 {
 [2021-01-26 13:37:04,206] INFO KafkaConfig values: 
 ...
  (kafka.server.KafkaConfig)
-} #<- Kafka ·Îµå½Ã Config Á¤º¸ È®ÀÎÇÒ¼ö ÀÖ´Â ·Î±× ºí·Ï
+} #<- Kafka ë¡œë“œì‹œ Config ì •ë³´ í™•ì¸í• ìˆ˜ ìˆëŠ” ë¡œê·¸ ë¸”ë¡
 
-10. ½Ã½ºÅÛ Àç½ÃÀÛ½Ã ÀÚµ¿ ½ÇÇà µî·Ï
+10. ì‹œìŠ¤í…œ ì¬ì‹œì‘ì‹œ ìë™ ì‹¤í–‰ ë“±ë¡
 # systemctl enable kafka-server.service
-NOTE. Å×½ºÆ® °á°ú ¾ÈµÊ(Kafka´Â ½Ã½ºÅÛ ½ÃÀÛ½Ã ¼öµ¿À¸·Î ½ÇÇàÇÏÀÚ!)
+NOTE. í…ŒìŠ¤íŠ¸ ê²°ê³¼ ì•ˆë¨(KafkaëŠ” ì‹œìŠ¤í…œ ì‹œì‘ì‹œ ìˆ˜ë™ìœ¼ë¡œ ì‹¤í–‰í•˜ì!)
 
-11. ÆíÀÇ¸¦ À§ÇÑ °æ·Î Ãß°¡
+11. í¸ì˜ë¥¼ ìœ„í•œ ê²½ë¡œ ì¶”ê°€
 # vi /etc/profile.d/kafka.sh
 export PATH=$PATH:/opt/kafka/bin
 
-12. ÅäÇÈ »ı¼º, »èÁ¦
-o »ı¼º
+12. í† í”½ ìƒì„±, ì‚­ì œ
+o ìƒì„±
 # /usr/local/kafka/bin/kafka-topics.sh \
 > --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
 > --replication-factor 1 --partitions 1 --topic peter-topic --create
 Created topic peter-topic.
 
-o »èÁ¦
+o ì‚­ì œ
 # /usr/local/kafka/bin/kafka-topics.sh \
 > --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
 > --topic peter-topic --delete
 Topic peter-topic is marked for deletion.
 Note: This will have no impact if delete.topic.enable is not set to true.
 
-13. ÇÁ·Îµà¼­, ÄÁ½´¸Ó
-o ÇÁ·Îµà¼­ »ı¼º
+13. í”„ë¡œë“€ì„œ, ì»¨ìŠˆë¨¸
+o í”„ë¡œë“€ì„œ ìƒì„±
 # /usr/local/kafka/bin/kafka-console-producer.sh \
 > --broker-list peter-kafka001:9092,peter-kafka002:9092,peter-kafka003:9092 \
 > --topic peter-topic
->       # <- ÀÔ·Â ÇÁ·ÒÇÁÆ®
+>       # <- ì…ë ¥ í”„ë¡¬í”„íŠ¸
 
-o ÄÁ½´¸Ó »ı¼º
+o ì»¨ìŠˆë¨¸ ìƒì„±
 # /usr/local/kafka/bin/kafka-console-consumer.sh \
 > --bootstrap-server peter-kafka001:9092,peter-kafka002:9092,peter-kafka003:9092 \
 > --topic peter-topic --from-beginning
@@ -286,7 +286,7 @@ o ÄÁ½´¸Ó »ı¼º
 .END OF KAFKA
 
 
-Yahoo/CMAK ¼³Ä¡(±¸ kafka-manager)
+Yahoo/CMAK ì„¤ì¹˜(êµ¬ kafka-manager)
 ================================
 # cd ~/work
 # wget https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.10%2B9/OpenJDK11U-jdk_x64_linux_hotspot_11.0.10_9.tar.gz
@@ -294,7 +294,7 @@ Yahoo/CMAK ¼³Ä¡(±¸ kafka-manager)
 # tar zxvf ~/work/OpenJDK11U-jdk_x64_linux_hotspot_11.0.10_9.tar.gz
 # /usr/local/jdk-11.0.10+9/bin/javac -version
 
-NOTE. ÃÖ½Å ¹öÀüÀº java-11¿¡¼­¸¸ ½ÇÇàÀÌ µÊ. (º°µµÀÇ ¼­¹ö¿¡¼­ Java11À» ¼³Ä¡ÇØ¼­ ÇØµµ µÊ)
+NOTE. ìµœì‹  ë²„ì „ì€ java-11ì—ì„œë§Œ ì‹¤í–‰ì´ ë¨. (ë³„ë„ì˜ ì„œë²„ì—ì„œ Java11ì„ ì„¤ì¹˜í•´ì„œ í•´ë„ ë¨)
 
 # cd ~/work
 # wget https://github.com/yahoo/CMAK/archive/3.0.0.5.tar.gz
@@ -313,29 +313,29 @@ setJavaHome() {
 
 /opt/kafka-manager/bin/cmak -Dconfig.file=/opt/kafka-manager/conf/application.conf -Dhttp.port=9000
 
-@@@Yahoo/CMAK ¼³Ä¡(±¸ kafka-manager)
+@@@Yahoo/CMAK ì„¤ì¹˜(êµ¬ kafka-manager)
 @@@=================================
 @@@ref) https://log-laboratory.tistory.com/180
 @@@
-@@@NOTE. 3.X.X.X ¹öÀüÀº JAVA 11ºÎÅÍ µÇ´Â °Í °°¾Æ¼­ ¾ÈÀüÇÏ°Ô CMAK-1.3.3.23.tar ´Ù¿î·ÎµåÇÏ¿´´Ù.
+@@@NOTE. 3.X.X.X ë²„ì „ì€ JAVA 11ë¶€í„° ë˜ëŠ” ê²ƒ ê°™ì•„ì„œ ì•ˆì „í•˜ê²Œ CMAK-1.3.3.23.tar ë‹¤ìš´ë¡œë“œí•˜ì˜€ë‹¤.
 @@@
 @@@# cd ~/work
 @@@# wget https://github.com/yahoo/CMAK/archive/2.0.0.2.tar.gz
 @@@# tar zxvf 2.0.0.2.tar.gz
 @@@# cd CMAK-2.0.0.2
 @@@# ./sbt clean dist
-@@@(sbt-launch.jar ¸¦ downloadÇÒ¼ö ¾ø´Ù°í ¿¡·¯°¡ ¹ß»ı)
+@@@(sbt-launch.jar ë¥¼ downloadí• ìˆ˜ ì—†ë‹¤ê³  ì—ëŸ¬ê°€ ë°œìƒ)
 @@@
 @@@# cd ~/work
 @@@# wget https://github.com/sbt/sbt/releases/download/v1.2.8/sbt-1.2.8.tgz
 @@@# tar zxvf sbt-1.2.8.tgz
-@@@(sbt/bin/sbt-launch.jar °¡ ÀÖÀ½)
+@@@(sbt/bin/sbt-launch.jar ê°€ ìˆìŒ)
 @@@# cd CMAK-2.0.0.2
 @@@# cp -p ../sbt/bin/sbt-launch.jar /root/.sbt/launchers/1.2.8/.
 @@@# ./sbt clean dist
 
 
-filebeat ¼³Ä¡
+filebeat ì„¤ì¹˜
 =============
 ref) https://www.elastic.co/downloads/beats/filebeat
      https://www.elastic.co/guide/en/beats/filebeat/7.10/setup-repositories.html#_yum
@@ -361,13 +361,13 @@ type=rpm-md
 # systemctl status filebeat.service
 
 
-NiFi ¼³Ä¡
+NiFi ì„¤ì¹˜
 ==========
-1. °èÁ¤ Ãß°¡
+1. ê³„ì • ì¶”ê°€
 # groupadd -g 8080 nifi
 # useradd  nifi -u 8080 -g nifi
 
-2. ¼³Ä¡
+2. ì„¤ì¹˜
 # cd ~/work
 # wget https://archive.apache.org/dist/nifi/1.11.4/nifi-1.11.4-bin.tar.gz
 # wget https://archive.apache.org/dist/nifi/1.11.4/nifi-toolkit-1.11.4-bin.tar.gz
@@ -376,7 +376,7 @@ NiFi ¼³Ä¡
 # tar zxvf ~/work/nifi-1.11.4-bin.tar.gz
 # ln -s nifi-1.11.4 nifi
 
-3. ¼³Á¤
+3. ì„¤ì •
 # cd /opt/nifi/conf
 
 o nifi.properties
@@ -386,7 +386,7 @@ o nifi.properties
 ...
 nifi.web.http.host=peter-kafka00[1|2|3]
 nifi.web.http.port=8080
-#nifi.web.http.port=8081 # <- zookeeper¿¡¼­ 8080Æ÷Æ®¸¦ »ç¿ëÇÔÀ¸·Î º¯°æ!
+#nifi.web.http.port=8081 # <- zookeeperì—ì„œ 8080í¬íŠ¸ë¥¼ ì‚¬ìš©í•¨ìœ¼ë¡œ ë³€ê²½!
 
 nifi.cluster.is.node=true
 nifi.cluster.node.address=peter-kafka00[1|2|3]
@@ -394,7 +394,7 @@ nifi.cluster.node.protocol.port=8082
 
 #nifi.zookeeper.connect.string=192.168.126.71:2181,192.168.126.72:2181,192.168.126.73:2181
 nifi.zookeeper.connect.string=peter-kafka001:2181,peter-kafka002:2181,peter-kafka003:2181
-#nifi.zookeeper.connect.string=peter-zk001:2181,peter-zk002:2181,peter-zk003:2181   # <- ÀÌ°Ç ÀÌ»óÇÏ°Ô µ¿ÀÛÇÔ. Å¬¶ó½ºÅÍ ¸â¹ö°¡ 3ÀÌ ¾Æ´Ñ 6À¸·Î ÀÎ½ÄÇÏ´Â ¹®Á¦ ¹ß»ı. ²÷ÀÓ¾ø´Â leader¼±Ãâ...
+#nifi.zookeeper.connect.string=peter-zk001:2181,peter-zk002:2181,peter-zk003:2181   # <- ì´ê±´ ì´ìƒí•˜ê²Œ ë™ì‘í•¨. í´ë¼ìŠ¤í„° ë©¤ë²„ê°€ 3ì´ ì•„ë‹Œ 6ìœ¼ë¡œ ì¸ì‹í•˜ëŠ” ë¬¸ì œ ë°œìƒ. ëŠì„ì—†ëŠ” leaderì„ ì¶œ...
 ...
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -421,7 +421,7 @@ ref) https://stackoverflow.com/questions/59826510/a-hostprovider-may-not-be-empt
 <cluster-provider>
         <id>zk-provider</id>
         <class>org.apache.nifi.controller.state.providers.zookeeper.ZooKeeperStateProvider</class>
-        <property name="Connect String">peter-kafka001:2181,peter-kafka002:2181,peter-kafka003:2181</property> # <- ¿©±â °ª Ãß°¡
+        <property name="Connect String">peter-kafka001:2181,peter-kafka002:2181,peter-kafka003:2181</property> # <- ì—¬ê¸° ê°’ ì¶”ê°€
         <property name="Root Node">/nifi</property>
         <property name="Session Timeout">10 seconds</property>
         <property name="Access Control">Open</property>
@@ -429,9 +429,9 @@ ref) https://stackoverflow.com/questions/59826510/a-hostprovider-may-not-be-empt
 ...
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-NOTE. ListSFTP ¿Í °°Àº processor¿¡¼­ À§ÀÇ zookeeper ¼³Á¤°ªÀ» »ç¿ëÇÔ!(¼³Á¤À» ÇÏÁö ¾ÊÀ»½Ã HostProvider may not empty ¿¡·¯ ¹ß»ı)
+NOTE. ListSFTP ì™€ ê°™ì€ processorì—ì„œ ìœ„ì˜ zookeeper ì„¤ì •ê°’ì„ ì‚¬ìš©í•¨!(ì„¤ì •ì„ í•˜ì§€ ì•Šì„ì‹œ HostProvider may not empty ì—ëŸ¬ ë°œìƒ)
 
-o nifi-env.sh ÆÄÀÏ ¼³Á¤
+o nifi-env.sh íŒŒì¼ ì„¤ì •
 # cd /opt/nifi/bin
 # cp -p nifi-env.sh nifi-env.sh.orig
 # vi nifi-env.sh
@@ -441,41 +441,41 @@ export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk/
 ...
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-4. ºÒÇÊ¿äÇÑ ÆÄÀÏ »èÁ¦(in Linux)
+4. ë¶ˆí•„ìš”í•œ íŒŒì¼ ì‚­ì œ(in Linux)
 # cd /opt/nifi
 # /bin/rm -f bin/*.bat
 
-5. ±âÅ¸¼³Á¤
+5. ê¸°íƒ€ì„¤ì •
 # vi /etc/profile.d/java.sh
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk/
 
-6. ½ÇÇà °èÁ¤ ¼³Á¤
+6. ì‹¤í–‰ ê³„ì • ì„¤ì •
 # chown -R nifi:nifi /opt/nifi-1.11.4/
 # chown -R nifi:nifi /opt/nifi
 
-7. ÀÚµ¿ ½ÇÇà µî·Ï(systemd)
+7. ìë™ ì‹¤í–‰ ë“±ë¡(systemd)
 # /opt/nifi/bin/nifi.sh install nifi
 # source /etc/profile.d/java.sh
 # systemctl daemon-reload
 # systemctl start nifi.service
 # systemctl status nifi.service
 
-8. È®ÀÎ
+8. í™•ì¸
 # jps
 # ps -ef|grep nifi
 # netstat -ntlp | grep 8080
 # /opt/zookeeper/bin/zkCli.sh
 ls /nifi
 
-9. À¥ Á¢¼Ó
-À¥URL: http://peter-kafka001:8080/nifi/
+9. ì›¹ ì ‘ì†
+ì›¹URL: http://peter-kafka001:8080/nifi/
        http://peter-kafka002:8080/nifi/
        http://peter-kafka003:8080/nifi/
 
 .END OF KAFKA
 
 
-elasticsearch ¼³Ä¡
+elasticsearch ì„¤ì¹˜
 ==================
 [root@peter-kafka001]# yum install elasticsearch
 # cd /etc/elasticsearch/
@@ -488,13 +488,13 @@ elasticsearch ¼³Ä¡
 # yum install kibana
 
 
-Hadoop ¼³Ä¡
+Hadoop ì„¤ì¹˜
 ==========
 ref) https://excelsior-cjh.tistory.com/73
 
-0. ±¸¼º
+0. êµ¬ì„±
 -----------------+--------------------------------------------------+----------------------
- ±¸ºĞ            | Host                                             | ºñ°í
+ êµ¬ë¶„            | Host                                             | ë¹„ê³ 
 -----------------+--------------------------------------------------+----------------------
 NodeManager      | peter-kafka001, peter-kafka002, peter-kafka003   | 
 ResourceManager  | peter-kafka001, peter-kafka002                   | Active
@@ -504,7 +504,7 @@ journalnode      | peter-kafka001, peter-kafka002, peter-kafka003   | /w Zookeep
 JobHistoryServer | peter-kafka001                                   | 
 -----------------+--------------------------------------------------+----------------------
 
-1. °èÁ¤ Ãß°¡
+1. ê³„ì • ì¶”ê°€
 # groupadd -g 1004 hadoop
 
 # useradd hadoop -u 1004 -g hadoop
@@ -512,7 +512,7 @@ JobHistoryServer | peter-kafka001                                   |
 # useradd yarn -u 8032 -g hadoop
 # useradd mapred -u 19888 -g hadoop
 
-NOTE. hadoop À¯Àú °èÁ¤Àº »ç¿ëÇÏÁö ¾ÊÀ½.
+NOTE. hadoop ìœ ì € ê³„ì •ì€ ì‚¬ìš©í•˜ì§€ ì•ŠìŒ.
 
 # su - hdfs
 $ ssh-keygen -t rsa
@@ -544,7 +544,7 @@ $ ssh-copy-id -i ~/.ssh/id_rsa.pub mapred@peter-kafka001
 $ ssh-copy-id -i ~/.ssh/id_rsa.pub mapred@peter-kafka002
 $ ssh-copy-id -i ~/.ssh/id_rsa.pub mapred@peter-kafka003
 
-2. ¼³Ä¡
+2. ì„¤ì¹˜
 # cd ~/work
 # wget https://downloads.apache.org/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz
 # cd /opt
@@ -553,7 +553,7 @@ $ ssh-copy-id -i ~/.ssh/id_rsa.pub mapred@peter-kafka003
 (in Linux)
 # find /opt/hadoop/ -name "*.cmd" -delete -print
 
-3. ¼³Á¤
+3. ì„¤ì •
 # cd /opt/hadoop/etc/hadoop/
 # cp -p slaves slaves.orig
 # vi slaves
@@ -1017,7 +1017,7 @@ peter-kafka003
 </configuration>
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-4. spark-2.3.4-yarn-shuffle.jar º¹»ç (hadoop-2.10.0.tar.gz ¼³Ä¡½Ã ÇÊ¿äÇßÀ½.)
+4. spark-2.3.4-yarn-shuffle.jar ë³µì‚¬ (hadoop-2.10.0.tar.gz ì„¤ì¹˜ì‹œ í•„ìš”í–ˆìŒ.)
 # cd ~/work
 # wget https://archive.apache.org/dist/spark/spark-2.3.4/spark-2.3.4-bin-hadoop2.7.tgz
 # tar zxvf spark-2.3.4-bin-hadoop2.7.tgz
@@ -1028,7 +1028,7 @@ peter-kafka003
 # scp -p root@peter-kafka001:/opt/hadoop/share/hadoop/yarn/lib/spark-2.3.4-yarn-shuffle.jar /opt/hadoop/share/hadoop/yarn/lib/.
 # chown hadoop:hadoop /opt/hadoop/share/hadoop/yarn/lib/spark-2.3.4-yarn-shuffle.jar
 
-5. ÀúÀå¼Ò ¼³Á¤
+5. ì €ì¥ì†Œ ì„¤ì •
 # mkdir /dfs/
 # mkdir /dfs/nn/ /dfs/dn/ /dfs/jn/ /dfs/jn/tmp/ /LOG/
 
@@ -1044,7 +1044,7 @@ peter-kafka003
 # chmod 775 /dfs/jn/
 # chmod 775 /dfs/jn/tmp/
 
-6. ±ÇÇÑ ¼³Á¤
+6. ê¶Œí•œ ì„¤ì •
 # chown -R hadoop:hadoop /opt/hadoop-2.10.1/
 # chown -R hadoop:hadoop /opt/hadoop
 # chmod -R g+w /opt/hadoop-2.10.1/
@@ -1053,15 +1053,15 @@ peter-kafka003
 # chown hadoop:hadoop
 # chmod 775 /opt/hadoop/logs/
 
-7. ÀüÃ¼ ³ëµå¿¡ ¼³Á¤ º¹»ç : in pater-kafka001
+7. ì „ì²´ ë…¸ë“œì— ì„¤ì • ë³µì‚¬ : in pater-kafka001
 # cd  /opt/hadoop/etc/hadoop/
 # scp -p slaves include_server core-site.xml hdfs-site.xml yarn-site.xml root@peter-kafka002:/opt/hadoop/etc/hadoop/.
 # scp -p slaves include_server core-site.xml hdfs-site.xml yarn-site.xml root@peter-kafka003:/opt/hadoop/etc/hadoop/.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-8. ½ÇÇà
+8. ì‹¤í–‰
 o JournalNode
-    1. Zookeeper file system Æ÷¸Ë : in peter-kafka001
+    1. Zookeeper file system í¬ë§· : in peter-kafka001
     # su - hdfs
     $ /opt/hadoop/bin/hdfs zkfc -formatZK
 
@@ -1107,7 +1107,7 @@ o JournalNode
     ************************************************************/
     [hdfs@peter-kafka001 ~]$
 
-    2. ¼³Á¤ È®ÀÎ
+    2. ì„¤ì • í™•ì¸
     $ /opt/zookeeper/bin/zkCli.sh
     [zk: localhost:2181(CONNECTED) 0] ls /
     [hadoop-ha, kafka, zookeeper]
@@ -1115,8 +1115,8 @@ o JournalNode
     [peter-cluster]
     [zk: localhost:2181(CONNECTED) 2] 
 
-    3. ½ÇÇà
-@@@ vi /etc/profile.d/hadoop.sh ¼³Á¤
+    3. ì‹¤í–‰
+@@@ vi /etc/profile.d/hadoop.sh ì„¤ì •
     # su - yarn
     $ cd /opt/hadoop
     $ sbin/hadoop-daemon.sh start journalnode
@@ -1126,7 +1126,7 @@ o JournalNode
     [yarn@peter-kafka001 hadoop]$ sbin/hadoop-daemon.sh start journalnode
     starting journalnode, logging to /opt/hadoop-2.10.1/logs/hadoop-yarn-journalnode-peter-kafka001.out
     [yarn@peter-kafka001 hadoop]$ jps
-    5292 JournalNode            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    5292 JournalNode            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
     5358 Jps
 
     [yarn@peter-kafka002 ~]$ cd /opt/hadoop
@@ -1134,16 +1134,16 @@ o JournalNode
     starting journalnode, logging to /opt/hadoop-2.10.1/logs/hadoop-yarn-journalnode-peter-kafka002.out
     [yarn@peter-kafka002 hadoop]$ jps
     53824 Jps
-    53768 JournalNode            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    53768 JournalNode            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
 
     [yarn@peter-kafka003 ~]$ cd /opt/hadoop
     [yarn@peter-kafka003 hadoop]$ sbin/hadoop-daemon.sh start journalnode
     starting journalnode, logging to /opt/hadoop-2.10.1/logs/hadoop-yarn-journalnode-peter-kafka003.out
     [yarn@peter-kafka003 hadoop]$ jps
     55857 Jps
-    55801 JournalNode            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    55801 JournalNode            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
 
-    4. [Âü°í] JournalNode ÁßÁö. (Namenode formatÀ» À§ÇØ¼­´Â ÁßÁö ÇÏ¸é ¾ÈµÊ)
+    4. [ì°¸ê³ ] JournalNode ì¤‘ì§€. (Namenode formatì„ ìœ„í•´ì„œëŠ” ì¤‘ì§€ í•˜ë©´ ì•ˆë¨)
     # su - yarn
     $ cd /opt/hadoop
     $ sbin/hadoop-daemon.sh stop journalnode
@@ -1152,7 +1152,7 @@ o JournalNode
 
 
 o NameNode
-    1. NameNode Æ÷¸Ë : in peter-kafka001(journalnode °¡ ½ÇÇàµÈ »óÅÂ¿¡¼­ ½ÇÇàÇØ¾ßÇÔ)
+    1. NameNode í¬ë§· : in peter-kafka001(journalnode ê°€ ì‹¤í–‰ëœ ìƒíƒœì—ì„œ ì‹¤í–‰í•´ì•¼í•¨)
     # su - hdfs
     $ cd /opt/hadoop
     $ bin/hdfs namenode -format
@@ -1189,7 +1189,7 @@ o NameNode
     21/02/21 13:35:53 INFO blockmanagement.DatanodeManager: dfs.block.invalidate.limit: configured=1000, counted=60, effected=1000
     21/02/21 13:35:53 INFO blockmanagement.DatanodeManager: dfs.namenode.datanode.registration.ip-hostname-check=true
     21/02/21 13:35:53 INFO blockmanagement.BlockManager: dfs.namenode.startup.delay.block.deletion.sec is set to 000:00:00:00.000
-    21/02/21 13:35:53 INFO blockmanagement.BlockManager: The block deletion will start around 2021 2¿ù 21 13:35:53
+    21/02/21 13:35:53 INFO blockmanagement.BlockManager: The block deletion will start around 2021 2ì›” 21 13:35:53
     21/02/21 13:35:53 INFO util.GSet: Computing capacity for map BlocksMap
     21/02/21 13:35:53 INFO util.GSet: VM type       = 64-bit
     21/02/21 13:35:53 INFO util.GSet: 2.0% max memory 889 MB = 17.8 MB
@@ -1242,14 +1242,14 @@ o NameNode
     ************************************************************/
     [hdfs@peter-kafka001 hadoop]$ 
     [hdfs@peter-kafka001 hadoop]$ ll /dfs/nn/current/
-    ÇÕ°è 16
-    -rw-r--r-- 1 hdfs hadoop 218  2¿ù 21 13:35 VERSION
-    -rw-r--r-- 1 hdfs hadoop 322  2¿ù 21 13:35 fsimage_0000000000000000000
-    -rw-r--r-- 1 hdfs hadoop  62  2¿ù 21 13:35 fsimage_0000000000000000000.md5
-    -rw-r--r-- 1 hdfs hadoop   2  2¿ù 21 13:35 seen_txid
+    í•©ê³„ 16
+    -rw-r--r-- 1 hdfs hadoop 218  2ì›” 21 13:35 VERSION
+    -rw-r--r-- 1 hdfs hadoop 322  2ì›” 21 13:35 fsimage_0000000000000000000
+    -rw-r--r-- 1 hdfs hadoop  62  2ì›” 21 13:35 fsimage_0000000000000000000.md5
+    -rw-r--r-- 1 hdfs hadoop   2  2ì›” 21 13:35 seen_txid
     [hdfs@peter-kafka001 hadoop]$ 
 
-    2. Secondary Namenode data µ¿±âÈ­¸¦ À§ÇØ namenode ½ÇÇà : in peter-kafka001
+    2. Secondary Namenode data ë™ê¸°í™”ë¥¼ ìœ„í•´ namenode ì‹¤í–‰ : in peter-kafka001
     # su - hdfs
     $ cd /opt/hadoop
     $ sbin/hadoop-daemon.sh start namenode
@@ -1260,11 +1260,11 @@ o NameNode
     [hdfs@peter-kafka001 hadoop]$ sbin/hadoop-daemon.sh start namenode
     starting namenode, logging to /opt/hadoop-2.10.1/logs/hadoop-hdfs-namenode-peter-kafka001.out
     [hdfs@peter-kafka001 hadoop]$ jps
-    5649 NameNode            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    5649 NameNode            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
     5802 Jps
     [hdfs@peter-kafka001 hadoop]$ 
 
-    3. Secondary Namenode data µ¿±âÈ­ : in peter-kafka002
+    3. Secondary Namenode data ë™ê¸°í™” : in peter-kafka002
     # su - hdfs
     $ cd /opt/hadoop
     $ bin/hdfs namenode -bootstrapStandby
@@ -1311,7 +1311,7 @@ o NameNode
     ************************************************************/
     [hdfs@peter-kafka002 hadoop]$ 
 
-    4. Secondary Namenode ½ÇÇà: in peter-kafka002
+    4. Secondary Namenode ì‹¤í–‰: in peter-kafka002
     # su - hdfs
     $ cd /opt/hadoop
     $ sbin/hadoop-daemon.sh start namenode
@@ -1320,11 +1320,11 @@ o NameNode
     [hdfs@peter-kafka002 hadoop]$ sbin/hadoop-daemon.sh start namenode
     starting namenode, logging to /opt/hadoop-2.10.1/logs/hadoop-hdfs-namenode-peter-kafka002.out
     [hdfs@peter-kafka002 hadoop]$ jps
-    54516 NameNode            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    54516 NameNode            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
     54670 Jps
     [hdfs@peter-kafka002 hadoop]$ 
 
-5. ÁÖÅ°ÆÛ Àå¾Ö ÄÁÆ®·Ñ·¯(ZKFC) : in peter-kafka001, peter-kafka002
+5. ì£¼í‚¤í¼ ì¥ì•  ì»¨íŠ¸ë¡¤ëŸ¬(ZKFC) : in peter-kafka001, peter-kafka002
     # su - hdfs
     $ cd /opt/hadoop
     $ sbin/hadoop-daemon.sh start zkfc
@@ -1359,11 +1359,11 @@ o ResourceManger : in peter-kafka001
     starting resourcemanager, logging to /opt/hadoop-2.10.1/logs/yarn-yarn-resourcemanager-peter-kafka001.out
     [yarn@peter-kafka001 hadoop]$ jps
     6249 Jps
-    6011 ResourceManager            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    6011 ResourceManager            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
     5292 JournalNode
     [yarn@peter-kafka001 hadoop]$ 
 
-o ¿©±â±îÁö ÁøÇà½Ã ÇÁ·Î¼¼½º È®ÀÎ
+o ì—¬ê¸°ê¹Œì§€ ì§„í–‰ì‹œ í”„ë¡œì„¸ìŠ¤ í™•ì¸
     [root@peter-kafka001 ~]# jps
     5649 NameNode
     6306 Jps
@@ -1388,8 +1388,8 @@ o ¿©±â±îÁö ÁøÇà½Ã ÇÁ·Î¼¼½º È®ÀÎ
     1534 QuorumPeerMain
     [root@peter-kafka003 ~]# 
 
-    NOTE. ÇöÀç DataNode´Â ½ÇÇàÇÏÁö ¾ÊÀ½.
-          hdfs, yarn, mapred °èÁ¤À¸·Î ½ÇÇàÇÏ¹Ç·Î root°èÁ¤¿¡¼­ jps·Î ÀüÃ¼ÇÁ·Î¼¼½º È®ÀÎ °¡´É
+    NOTE. í˜„ì¬ DataNodeëŠ” ì‹¤í–‰í•˜ì§€ ì•ŠìŒ.
+          hdfs, yarn, mapred ê³„ì •ìœ¼ë¡œ ì‹¤í–‰í•˜ë¯€ë¡œ rootê³„ì •ì—ì„œ jpsë¡œ ì „ì²´í”„ë¡œì„¸ìŠ¤ í™•ì¸ ê°€ëŠ¥
 
 o JobHistoryServer : in peter-kafka003
     # su - mapred
@@ -1402,7 +1402,7 @@ o JobHistoryServer : in peter-kafka003
     starting historyserver, logging to /opt/hadoop-2.10.1/logs/mapred-mapred-historyserver-peter-kafka001.out
     [mapred@peter-kafka001 hadoop]$ jps
     6530 Jps
-    6487 JobHistoryServer            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    6487 JobHistoryServer            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
     [mapred@peter-kafka001 hadoop]$ 
 
 o DataNode : in peter-kafka001, peter-kafka002, peter-kafka003
@@ -1415,7 +1415,7 @@ o DataNode : in peter-kafka001, peter-kafka002, peter-kafka003
     starting datanode, logging to /opt/hadoop-2.10.1/logs/hadoop-hdfs-datanode-peter-kafka001.out
     [hdfs@peter-kafka001 hadoop]$ jps
     5649 NameNode
-    7170 DataNode            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    7170 DataNode            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
     7447 Jps
     [hdfs@peter-kafka001 hadoop]$ 
 
@@ -1424,7 +1424,7 @@ o DataNode : in peter-kafka001, peter-kafka002, peter-kafka003
     starting datanode, logging to /opt/hadoop-2.10.1/logs/hadoop-hdfs-datanode-peter-kafka002.out
     [hdfs@peter-kafka002 hadoop]$ jps
     54387 Jps
-    54110 DataNode            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    54110 DataNode            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
 
     [hdfs@peter-kafka002 hadoop]$ 
 
@@ -1432,20 +1432,20 @@ o DataNode : in peter-kafka001, peter-kafka002, peter-kafka003
     [hdfs@peter-kafka003 hadoop]$ sbin/hadoop-daemon.sh start datanode
     starting datanode, logging to /opt/hadoop-2.10.1/logs/hadoop-hdfs-datanode-peter-kafka003.out
     [hdfs@peter-kafka003 hadoop]$ jps
-    56039 DataNode            # <--- ½ÇÇàÈÄ Ãß°¡µÊ.
+    56039 DataNode            # <--- ì‹¤í–‰í›„ ì¶”ê°€ë¨.
     56316 Jps
     [hdfs@peter-kafka003 hadoop]$ 
 
-o Hadoop ÁßÁö ÈÄ Àç½ÃÀÛ
-    CAUTION. hdfs, yarn, mapred °èÁ¤À¸·Î °¢°¢ ½ÇÇàÇÏ¹Ç·Î ¾Æ·¡ÀÇ ½ºÅ©¸³Æ®¸¦ ÀÌ¿ëÇÑ ½ÇÇàÀº ÇÏ¸é ¾ÈµÊ.
+o Hadoop ì¤‘ì§€ í›„ ì¬ì‹œì‘
+    CAUTION. hdfs, yarn, mapred ê³„ì •ìœ¼ë¡œ ê°ê° ì‹¤í–‰í•˜ë¯€ë¡œ ì•„ë˜ì˜ ìŠ¤í¬ë¦½íŠ¸ë¥¼ ì´ìš©í•œ ì‹¤í–‰ì€ í•˜ë©´ ì•ˆë¨.
     @@@stop-all.sh
     @@@start-all.sh
 
-    1. ÁßÁö
+    1. ì¤‘ì§€
     ref) https://m.blog.naver.com/lionlyloveil/220777609903
-        historyserver, yarn, zkfc, namenode, datanode, journalnode ¼øÀ¸·Î Á¾·á ÈÄ,
-        ¿ª¼øÀ¸·Î ±âµ¿.
-        zookeeper ÇÁ·Î¼¼½º´Â ³»¸®Áö ¾Ê°í °è¼Ó ±âµ¿»óÅÂ·Î ³öµ×´Ù.
+        historyserver, yarn, zkfc, namenode, datanode, journalnode ìˆœìœ¼ë¡œ ì¢…ë£Œ í›„,
+        ì—­ìˆœìœ¼ë¡œ ê¸°ë™.
+        zookeeper í”„ë¡œì„¸ìŠ¤ëŠ” ë‚´ë¦¬ì§€ ì•Šê³  ê³„ì† ê¸°ë™ìƒíƒœë¡œ ë†”ë’€ë‹¤.
 
     (in peter-kafka001)
     # su - mapred -c "/opt/hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver"
@@ -1456,7 +1456,7 @@ o Hadoop ÁßÁö ÈÄ Àç½ÃÀÛ
     # su - yarn -c "ssh yarn@peter-kafka002 \"/opt/hadoop/sbin/hadoop-daemon.sh stop journalnode\""
     # su - yarn -c "ssh yarn@peter-kafka003 \"/opt/hadoop/sbin/hadoop-daemon.sh stop journalnode\""
 
-    2. ½ÇÇà
+    2. ì‹¤í–‰
     (in peter-kafka001)
     # su - yarn -c "/opt/hadoop/sbin/hadoop-daemon.sh start journalnode"
     # su - yarn -c "ssh yarn@peter-kafka002 \"/opt/hadoop/sbin/hadoop-daemon.sh start journalnode\""
@@ -1466,7 +1466,7 @@ o Hadoop ÁßÁö ÈÄ Àç½ÃÀÛ
     # su - yarn -c "/opt/hadoop/sbin/start-yarn.sh"
     # su - mapred -c "/opt/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver"
 
-    <ÇÁ·Î¼¼½º È®ÀÎ>
+    <í”„ë¡œì„¸ìŠ¤ í™•ì¸>
     [root@peter-kafka001 ~]# jps
     12965 NodeManager                 # <--- 
     2102 Kafka
@@ -1505,8 +1505,8 @@ o Hadoop ÁßÁö ÈÄ Àç½ÃÀÛ
     58703 NodeManager                 # <--- 
     [root@peter-kafka003 ~]# 
 
-o Hadoop Å×½ºÆ® (wordcount)
-    1. µğ·ºÅä¸® ±¸¼º
+o Hadoop í…ŒìŠ¤íŠ¸ (wordcount)
+    1. ë””ë ‰í† ë¦¬ êµ¬ì„±
     # su - hdfs
     $ hadoop fs -ls /
     $ hadoop fs -mkdir /user/
@@ -1515,17 +1515,17 @@ o Hadoop Å×½ºÆ® (wordcount)
     $ hadoop fs -mkdir /user/hdfs/work/wordcount/
     $ hadoop fs -mkdir /user/hdfs/work/wordcount/wc-in/
 
-    2. Å×½ºÆ® µ¥ÀÌÅÍ¸¦ HDFS¿¡ ¾÷·Îµå: in peter-kafka001 (test¿ëµµ)
+    2. í…ŒìŠ¤íŠ¸ ë°ì´í„°ë¥¼ HDFSì— ì—…ë¡œë“œ: in peter-kafka001 (testìš©ë„)
     # su - hdfs
     $ mkdir -p ~/work/wordcount/wc-in/
     $ cd ~/work/wordcount/wc-in/
-    $ echo "bla ÇÑ±Û bla" > a.txt
-    $ echo "ÇÑ±Û wa bla wa" > b.txt
-    $ echo "Hello ÇÑ±Û" > c.txt
+    $ echo "bla í•œê¸€ bla" > a.txt
+    $ echo "í•œê¸€ wa bla wa" > b.txt
+    $ echo "Hello í•œê¸€" > c.txt
 
     $ hadoop fs  -put *.txt /user/hdfs/work/wordcount/wc-in/.
 
-    3. ½ÇÇà
+    3. ì‹¤í–‰
     $ hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.10.1.jar wordcount work/wordcount/wc-in/ work/wordcount/wc-out/
 
     [hdfs@peter-kafka001 ~]$ hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.10.1.jar wordcount work/wordcount/wc-in/ work/wordcount/wc-out/
@@ -1819,25 +1819,25 @@ o Hadoop Å×½ºÆ® (wordcount)
     Hello   1
     bla     3
     wa      2
-    ÇÑ±Û    3
+    í•œê¸€    3
     [hdfs@peter-kafka001 ~]$ 
 
-    4. È®ÀÎ (in WEB)
+    4. í™•ì¸ (in WEB)
     http://peter-kafka001:50070/ : Namenode info
     http://peter-kafka001:8088/  : 
 
 .END OF HADOOP
 
-MariaDB ¼³Ä¡
+MariaDB ì„¤ì¹˜
 ============
 ref) https://downloads.mariadb.org/mariadb/repositories/#mirror=yongbok
      https://bamdule.tistory.com/66
 
-1. °èÁ¤ Ãß°¡
+1. ê³„ì • ì¶”ê°€
 # groupadd -g 3306 mysql
 # useradd mysql -u 3306 -g mysql
 
-2. ¼³Ä¡
+2. ì„¤ì¹˜
 (in peter-kafka001, peter-kafka002)
 # vi /etc/yum.repos.d/MariaDB.repo
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1853,7 +1853,7 @@ gpgcheck=1
 # yum install galera-4
 # yum install MariaDB-server MariaDB-client
 
-3. ¼³Á¤
+3. ì„¤ì •
 # vi /etc/my.cnf
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 [mysql]
@@ -1929,7 +1929,7 @@ pid-file=/var/run/mariadb/mariadb.pid
 !includedir /etc/my.cnf.d
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-4. DB ÃÊ±âÈ­ ÀÛ¾÷
+4. DB ì´ˆê¸°í™” ì‘ì—…
     (in peter-kafka001)
     # systemctl start mariadb
     # systemctl status mariadb
@@ -2007,9 +2007,9 @@ pid-file=/var/run/mariadb/mariadb.pid
     [root@peter-kafka001 my.cnf.d]# 
     >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-5. galera ¼³Á¤
+5. galera ì„¤ì •
 # vi /etc/my.cnf.d/server.cnf
-NOTE. ¼­¹öº°·Î ¼³Á¤°ªÀÌ ´Ù¸§.(wsrep_node_address)
+NOTE. ì„œë²„ë³„ë¡œ ì„¤ì •ê°’ì´ ë‹¤ë¦„.(wsrep_node_address)
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #
 # These groups are read by MariaDB server.
@@ -2071,8 +2071,8 @@ wsrep_node_address=peter-kafka001 ## <-[ADD]
 
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-6.cluster ÀÛ¾÷
-    1) ¼³Á¤
+6.cluster ì‘ì—…
+    1) ì„¤ì •
     (in peter-kafka001)
     # galera_new_cluster
 
@@ -2101,14 +2101,14 @@ wsrep_node_address=peter-kafka001 ## <-[ADD]
     # systemctl status mariadb
     # systemctl enable mariadb
 
-7. È®ÀÎ
+7. í™•ì¸
     (in peter-kafka001 or peter-kafka002)
     # mysql -u root -p
     Enter password: root
     MariaDB [(none)]> show status like 'wsrep%';
     MariaDB [(none)]> show global status like 'wsrep_cluster_size';
 
-    NOTE. Hive¸¦ À§ÇÑ DB¹× °èÁ¤ »ı¼º
+    NOTE. Hiveë¥¼ ìœ„í•œ DBë° ê³„ì • ìƒì„±
 
     MariaDB [(none)]> show databases;
     MariaDB [(none)]> create database metastore DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
@@ -2122,18 +2122,18 @@ wsrep_node_address=peter-kafka001 ## <-[ADD]
 
     MariaDB [(none)]> exit
 
-    NOTE. µ¿±âÈ­ µÇ´ÂÁö È®ÀÎ
+    NOTE. ë™ê¸°í™” ë˜ëŠ”ì§€ í™•ì¸
 
 .END OF MARIADB
 
-Hive ¼³Ä¡
+Hive ì„¤ì¹˜
 =========
-1. °èÁ¤ Ãß°¡
+1. ê³„ì • ì¶”ê°€
     (in peter-kafka001, peter-kafka002)
     # groupadd -g 9083 hive
     # useradd hive -u 9083 -g hive
 
-2. ¼³Ä¡
+2. ì„¤ì¹˜
     (in peter-kafka001, peter-kafka002)
     # cd ~/work
     # wget https://downloads.apache.org/hive/hive-2.3.8/apache-hive-2.3.8-bin.tar.gz
@@ -2141,7 +2141,7 @@ Hive ¼³Ä¡
     # tar zxvf ~/work/apache-hive-2.3.8-bin.tar.gz 
     # ln -s apache-hive-2.3.8-bin hive
 
-3. ¼³Á¤(for metastore ¼­ºñ½º)
+3. ì„¤ì •(for metastore ì„œë¹„ìŠ¤)
     (in peter-kafka001, peter-kafka002)
     # cd /opt/hive/conf/
     # mkdir hive-metastoreserver
@@ -2153,8 +2153,8 @@ Hive ¼³Ä¡
     # vi /opt/hive/conf/hive-metastoreserver/hive-log4j2.properties
     <<<<<<<<<<
     ...
-    property.hive.log.dir = /var/log/hive                     # <- ·Î±× µğ·ºÅä¸® °æ·Î º¯°æ
-    property.hive.log.file = hive-metastoreserver.log         # <- ·Î±× ÆÄÀÏ¸í º¯°æ
+    property.hive.log.dir = /var/log/hive                     # <- ë¡œê·¸ ë””ë ‰í† ë¦¬ ê²½ë¡œ ë³€ê²½
+    property.hive.log.file = hive-metastoreserver.log         # <- ë¡œê·¸ íŒŒì¼ëª… ë³€ê²½
     ...
     # >>>> Delete log files older than x days
     appender.DRFA.strategy.action.type = Delete
@@ -2198,11 +2198,11 @@ Hive ¼³Ä¡
   </property>
   <property>
     <name>javax.jdo.option.ConnectionUserName</name>
-    <value>hive</value> #<- DBÁ¢¼Ó°èÁ¤
+    <value>hive</value> #<- DBì ‘ì†ê³„ì •
   </property>
   <property>
     <name>javax.jdo.option.ConnectionPassword</name>
-    <value>hive</value> #<-DBÁ¢¼Ó ÆĞ½º¿öµå
+    <value>hive</value> #<-DBì ‘ì† íŒ¨ìŠ¤ì›Œë“œ
   </property>
   <property>
     <name>datanucleus.connectionPoolingType</name>
@@ -2265,29 +2265,29 @@ Hive ¼³Ä¡
 </configuration>
     >>>>>>>>>>
 
-    4) MariaDB JDBC Connector ¼³Ä¡
+    4) MariaDB JDBC Connector ì„¤ì¹˜
     # cd ~/work
     # wget https://downloads.mariadb.com/Connectors/java/connector-java-2.3.0/mariadb-java-client-2.3.0.jar
-    @@@# wget https://downloads.mariadb.com/Connectors/java/connector-java-2.7.2/mariadb-java-client-2.7.2.jar (³ªÁß¿¡ ¼­ºñ½º ½ÃÀÛ½Ã¿¡ Self-test query [select "DB_ID" from "DBS"] failed; direct SQL is disabled ¿¡·¯ ¹ß»ı)
+    @@@# wget https://downloads.mariadb.com/Connectors/java/connector-java-2.7.2/mariadb-java-client-2.7.2.jar (ë‚˜ì¤‘ì— ì„œë¹„ìŠ¤ ì‹œì‘ì‹œì— Self-test query [select "DB_ID" from "DBS"] failed; direct SQL is disabled ì—ëŸ¬ ë°œìƒ)
     # /opt/hive
     # mkdir auxjars
     # cd auxjars
     # cp -p ~/work/mariadb-java-client-2.3.0.jar .
     # ln -s mariadb-java-client-2.3.0.jar mariadb-java-client.jar
 
-    5) ±âÅ¸ µğ·ºÅä¸® »ı¼º
+    5) ê¸°íƒ€ ë””ë ‰í† ë¦¬ ìƒì„±
     # mkdir /var/log/hive
 
-4. ½ÇÇà °èÁ¤ ¼³Á¤
+4. ì‹¤í–‰ ê³„ì • ì„¤ì •
     (in peter-kafka001, peter-kafka002)
     # chown -R hive:hive /opt/apache-hive-2.3.8-bin/
     # chown -R hive:hive /opt/hive
 
-5. Metastore DB »ı¼º
-   1) »ı¼º
+5. Metastore DB ìƒì„±
+   1) ìƒì„±
     (in peter-kafka001)
     # vi /opt/hive/conf/hive-site.xml
-    NOTE. schema »ı¼ºÀ» À§ÇØ¼­ ÀÓ½Ã·Î hive-site.xml »ı¼º
+    NOTE. schema ìƒì„±ì„ ìœ„í•´ì„œ ì„ì‹œë¡œ hive-site.xml ìƒì„±
     <<<<<<<<<<<<<<<
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
@@ -2317,13 +2317,13 @@ Hive ¼³Ä¡
     # cd /opt/hive/conf/
     # cp -p hive-metastoreserver/hive-env.sh .
     # chown hive:hive /opt/hive/conf/hive-env.sh
-    NOTE. hive-env.sh ÆÄÀÏµµ ¿ª½Ã ÀÓ½Ã·Î »ı¼º
+    NOTE. hive-env.sh íŒŒì¼ë„ ì—­ì‹œ ì„ì‹œë¡œ ìƒì„±
 
     # su - hive
     @@@$ hive --service schemaTool -dbType mysql -initSchema -userName hive -passWord hive
     $ hive --service schemaTool -dbType mysql -initSchema
 
-    ½ÇÇà ¿¹)
+    ì‹¤í–‰ ì˜ˆ)
     [hive@peter-kafka001 ~]$ hive --service schemaTool -dbType mysql -initSchema
     SLF4J: Class path contains multiple SLF4J bindings.
     SLF4J: Found binding in [jar:file:/opt/apache-hive-2.3.8-bin/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
@@ -2342,7 +2342,7 @@ Hive ¼³Ä¡
     # rm -f /opt/hive/conf/hive-site.xml
     # rm -f /opt/hive/conf/hive-env.sh
 
-    2)È®ÀÎ
+    2)í™•ì¸
     (in peter-kafka001 or peter-kafka002)
     # mysql -u root -p
     Enter password: root
@@ -2351,13 +2351,13 @@ Hive ¼³Ä¡
 
     MariaDB [(none)]> exit
 
-    NOTE. µ¿±âÈ­ µÇ´ÂÁö È®ÀÎ
+    NOTE. ë™ê¸°í™” ë˜ëŠ”ì§€ í™•ì¸
 
-    3) mariadb ÇÑ±Û ±úÁü ÇØ°á
+    3) mariadb í•œê¸€ ê¹¨ì§ í•´ê²°
     ref) https://heum-story.tistory.com/34
          https://www.lesstif.com/dbms/mysql-rhel-centos-ubuntu-20775198.html
 
-    ##table coulmn character-set º¯°æ
+    ##table coulmn character-set ë³€ê²½
     (in peter-kafka001)
     # mysql -u root -p
     Enter password: root
@@ -2371,7 +2371,7 @@ Hive ¼³Ä¡
     alter table DATABASE_PARAMS modify PARAM_VALUE varchar(4000) character set utf8 collate utf8_general_ci;
     alter table DBS modify `DESC` varchar(4000) character set utf8 collate utf8_general_ci;
 
-    ## table È®ÀÎ
+    ## table í™•ì¸
     show full columns from COLUMNS_V2;
     show full columns from TABLE_PARAMS;
     show full columns from SERDE_PARAMS;
@@ -2382,7 +2382,7 @@ Hive ¼³Ä¡
     show full columns from DATABASE_PARAMS;
     show full columns from DBS;
 
-    ½ÇÇà¿¹)
+    ì‹¤í–‰ì˜ˆ)
     MariaDB [metastore]>     show full columns from COLUMNS_V2;
     +-------------+--------------+-------------------+------+-----+---------+-------+---------------------------------+---------+
     | Field       | Type         | Collation         | Null | Key | Default | Extra | Privileges                      | Comment |
@@ -2624,7 +2624,7 @@ Hive ¼³Ä¡
     MariaDB [metastore]> 
 
 
-6. ½ÇÇà
+6. ì‹¤í–‰
     (in peter-kafka001, peter-kafka002)
     # vi /etc/profile.d/hive.sh
     export HIVE_HOME=/opt/hive
@@ -2759,7 +2759,7 @@ esac
     ($ hive-metastoreserver.sh stop)
 
 
-7. ¼³Á¤(for ThriftServer)
+7. ì„¤ì •(for ThriftServer)
     # su - hive
     $ cd /opt/hive/conf
     $ mkdir hive-thriftserver
@@ -2898,8 +2898,8 @@ esac
 >>>>>>>>>>>>>>>>>
 
 
-8. ½ÇÇà(for ThriftServer)
-    1) ¼³Á¤
+8. ì‹¤í–‰(for ThriftServer)
+    1) ì„¤ì •
     # su - hive
     $ cd /opt/hive/sbin
     $ cp -p hive-metastoreserver.sh hive-thriftserver.sh
@@ -3020,16 +3020,16 @@ case "${ACTION}" in
 esac
 >>>>>>>>>>>>>>>>>>>>
 
-    2) ½ÇÇà
+    2) ì‹¤í–‰
     $ hive-thriftserver.sh start
     $ hive-thriftserver.sh status
     ($ hive-thriftserver.sh stop)
 
-    3) È®ÀÎ
-    (Å×½ºÆ®°èÁ¤ »ı¼º)
+    3) í™•ì¸
+    (í…ŒìŠ¤íŠ¸ê³„ì • ìƒì„±)
     # useradd pjy -u 5287 -g wheel
 
-    (hdfs»ó¿¡ hive¸¦ À§ÇÑ µğ·ºÅä¸® »ı¼º)
+    (hdfsìƒì— hiveë¥¼ ìœ„í•œ ë””ë ‰í† ë¦¬ ìƒì„±)
     # su - hdfs
 
     $ hadoop fs -mkdir /user/hive
@@ -3051,163 +3051,22 @@ esac
 
     # su - hive
     $ beeline -u jdbc:hive2://peter-kafka001:10000 -n hive
-    NOTE. -n °èÁ¤¸íÀº HDFS»ó¿¡ »ç¿ëÇÒ °èÁ¤¸í ÀÔ·Â
+    NOTE. -n ê³„ì •ëª…ì€ HDFSìƒì— ì‚¬ìš©í•  ê³„ì •ëª… ì…ë ¥
 
-    4. DBeaver¿¡¼­ Á¢¼Ó ¼³Á¤
+    4. DBeaverì—ì„œ ì ‘ì† ì„¤ì •
     General
       JDBC URL => jdbc:hive2://peter-kafka001:10000,peter-kafka002:10000
       Database/Schema: => ()
     Authentification (Database Navie)
-      Username => pjy (HDFS»ó¿¡ ÀúÀå½Ã »ç¿ëµÉ °èÁ¤)
+      Username => pjy (HDFSìƒì— ì €ì¥ì‹œ ì‚¬ìš©ë  ê³„ì •)
       Password => ()
-    NOTE. HDFS»óÀÇ °èÁ¤º° ¼³Á¤½Ã¿¡ ÇÊ¿äÇÑ ¼³Á¤Àº
-     hadoopÀÇ core-site.xml¿¡ 
+    NOTE. HDFSìƒì˜ ê³„ì •ë³„ ì„¤ì •ì‹œì— í•„ìš”í•œ ì„¤ì •ì€
+     hadoopì˜ core-site.xmlì— 
         hadoop.proxyuser.hive.groups=*
         hadoop.proxyuser.hive.hosts=*
-     hiveÀÇ hive-site.xml (thriftserver¿ë)
+     hiveì˜ hive-site.xml (thriftserverìš©)
         hive.server2.enable.doAs=true
-    (¾ÆÁ÷ ÀÎÁõÀº ¾î¶»°Ô Ã³¸®ÇØ¾ßÇÒÁö °í¹ÎÁß...)
+    (ì•„ì§ ì¸ì¦ì€ ì–´ë–»ê²Œ ì²˜ë¦¬í•´ì•¼í• ì§€ ê³ ë¯¼ì¤‘...)
 
 .END OF HIVE
 
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@22
-
-o HDP ¼³Ä¡
-https://antop.tistory.com/entry/Install-Ambari-and-Deploy-HDP-in-CentOS
-
-o ncdc µ¥ÀÌÅÍSet
-http://hadoopsupport.blogspot.com/2017/05/download-national-climatic-data-center.html
-ftp://ftp.ncdc.noaa.gov/pub/data/noaa/
-
-# wget -r -np -A "*.gz" ftp://ftp.ncdc.noaa.gov/pub/data/noaa/
-
-
-@@@@@@@2@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DgroupId=com.newlecture -DartifactId=javaprj
-
-
-@@@mvn archetype:generate -DgroupId=com.newlecture -DartifactId=javaprj2 -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
-
-
-
-[root@peter-kafka001 ~]# /usr/local/kafka/bin/kafka-topics.sh \
-> --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
-> --topic peter --partitions 1 --replication-factor 2 --create
-Created topic peter.
-[root@peter-kafka001 ~]# 
-[root@peter-kafka001 ~]# /usr/local/kafka/bin/kafka-topics.sh \
-> --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
-> --topic peter --describe
-Topic: peter    PartitionCount: 1       ReplicationFactor: 2    Configs: 
-        Topic: peter    Partition: 0    Leader: 3       Replicas: 3,1   Isr: 3,1
-[root@peter-kafka001 ~]# 
-
-
-[root@peter-kafka001 work]# git clone https://github.com/onlybooks/kafka.git
-Cloning into 'kafka'...
-remote: Enumerating objects: 275, done.
-remote: Total 275 (delta 0), reused 0 (delta 0), pack-reused 275
-Receiving objects: 100% (275/275), 82.09 MiB | 15.57 MiB/s, done.
-Resolving deltas: 100% (155/155), done.
-[root@peter-kafka001 work]# 
-
-4Àå>
-[root@peter-kafka001 ~]# /usr/local/kafka/bin/kafka-topics.sh \
-> --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
-> --topic peter-topic --delete
-Topic peter-topic is marked for deletion.
-Note: This will have no impact if delete.topic.enable is not set to true.
-[root@peter-kafka001 ~]# /usr/local/kafka/bin/kafka-topics.sh \
-> --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
-> --topic peter-topic --partitions 1 --replication-factor 3 --create
-Created topic peter-topic.
-[root@peter-kafka001 ~]# /usr/local/kafka/bin/kafka-topics.sh \
-> --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
-> --topic peter-topic --describe
-Topic: peter-topic      PartitionCount: 1       ReplicationFactor: 3    Configs: 
-        Topic: peter-topic      Partition: 0    Leader: 2       Replicas: 2,1,3 Isr: 2,1,3
-[root@peter-kafka001 ~]# 
-
-[root@peter-kafka001 chapter4]# /usr/local/kafka/bin/kafka-topics.sh \
-> --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
-> --replication-factor 1 --partitions 2 --topic peter-topic2 --create
-Created topic peter-topic2.
-@@@Error while executing topic command : Topic 'peter-topic2' already exists.
-@@@[2021-01-22 16:10:16,159] ERROR org.apache.kafka.common.errors.TopicExistsException: Topic 'peter-topic2' already exists.
-@@@ (kafka.admin.TopicCommand$)
-
-
-7Àå>
-[root@peter-kafka001 filebeat]# /usr/local/kafka/bin/kafka-topics.sh \
-> --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
-> --topic peter-log --partitions 3 --replication-factor 2 --create
-Created topic peter-log.
-
-@@@[root@peter-kafka001 conf]# /usr/local/kafka-manager/bin/cmak -Dconfig.file=/usr/local/kafka-manager/conf/application.conf -Dhttp.port=9000 -Djava.net.preferIPv4Stack=True
-
-[root@peter-kafka001 ~]# /usr/local/kafka/bin/kafka-console-consumer.sh \
-> --bootstrap-server peter-kafka001:9092,peter-kafka002:9092,peter-kafka003:9092 \
-> --topic peter-log --max-messages 10 --from-beginning
-
-[root@peter-kafka003 ~]# /usr/local/kafka/bin/kafka-consumer-groups.sh \
-> --bootstrap-server peter-kafka001:9092,peter-kafka002:9092,peter-kafka003:9092 \
-> --list
-console-consumer-9027
-console-consumer-45908
-FirstAppConsumerGroup
-peter-nifi-consumer001
-[root@peter-kafka003 ~]# /usr/local/kafka/bin/kafka-consumer-groups.sh \
-> --bootstrap-server peter-kafka001:9092,peter-kafka002:9092,peter-kafka003:9092 \
-> --group peter-nifi-consumer001 --describe
-
-GROUP                  TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                     HOST            CLIENT-ID
-peter-nifi-consumer001 peter-log       0          375             375             0               consumer-1-32eb3e4f-ab2f-4ca0-9a2b-47ad0756f2ab /192.168.126.71 consumer-1
-peter-nifi-consumer001 peter-log       1          375             375             0               consumer-1-4e5493c8-0b8a-4d17-8287-deeaee47b617 /192.168.126.73 consumer-1
-peter-nifi-consumer001 peter-log       2          374             374             0               consumer-1-fdf0bf64-46a4-44cc-b459-74a98528c165 /192.168.126.72 consumer-1
-[root@peter-kafka003 ~]# 
-
-# /usr/local/kafka/bin/kafka-topics.sh \
-> --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
-> --topic peter-kafka001 --partitions 3 --replication-factor 2 --create
-Created topic peter-kafka001.
-# /usr/local/kafka/bin/kafka-topics.sh \
-> --zookeeper peter-zk001:2181,peter-zk002:2181,peter-zk003:2181/peter-kafka \
-> --topic peter-failure --partitions 3 --replication-factor 2 --create
-Created topic peter-failure.
-
-# /usr/local/kafka/bin/kafka-console-consumer.sh \
-> --bootstrap-server peter-kafka001:9092,peter-kafka002:9092,peter-kafka003:9092 \
-> --topic peter-kafka001 \
-> --from-beginning
-
-[root@peter-kafka002 ~]# /usr/local/kafka/bin/kafka-console-consumer.sh \
-> --bootstrap-server peter-kafka001:9092,peter-kafka002:9092,peter-kafka003:9092 \
-> --topic peter-failure \
-> --from-beginning
-@@@@@@@2@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
-in server01, server02, server03
-# pip3 install pandas
-
-[root@server01 ~]# pip3 install pandas
-WARNING: Running pip install with root privileges is generally not a good idea. Try `pip3 install --user` instead.
-Collecting pandas
-  Downloading https://files.pythonhosted.org/packages/c3/e2/00cacecafbab071c787019f00ad84ca3185952f6bb9bca9550ed83870d4d/pandas-1.1.5-cp36-cp36m-manylinux1_x86_64.whl (9.5MB)
-Collecting python-dateutil>=2.7.3 (from pandas)
-  Downloading https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl (227kB)
-Collecting numpy>=1.15.4 (from pandas)
-  Downloading https://files.pythonhosted.org/packages/45/b2/6c7545bb7a38754d63048c7696804a0d947328125d81bf12beaa692c3ae3/numpy-1.19.5-cp36-cp36m-manylinux1_x86_64.whl (13.4MB)
-Collecting pytz>=2017.2 (from pandas)
-  Downloading https://files.pythonhosted.org/packages/70/94/784178ca5dd892a98f113cdd923372024dc04b8d40abe77ca76b5fb90ca6/pytz-2021.1-py2.py3-none-any.whl (510kB)
-Collecting six>=1.5 (from python-dateutil>=2.7.3->pandas)
-  Downloading https://files.pythonhosted.org/packages/ee/ff/48bde5c0f013094d729fe4b0316ba2a24774b3ff1c52d924a8a4cb04078a/six-1.15.0-py2.py3-none-any.whl
-Installing collected packages: six, python-dateutil, numpy, pytz, pandas
-Successfully installed numpy-1.19.5 pandas-1.1.5 python-dateutil-2.8.1 pytz-2021.1 six-1.15.0
-[root@server01 ~]# 
-/usr/local/lib64/python3.6/site-packages/
-
-
-blue: #0000ff
-green: #008000
-red: #ff0000
